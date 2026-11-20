@@ -8,6 +8,7 @@
     <meta property="og:title" content="PERCETAKAN ANUGERAH_ART - Katalog Produk Resmi">
     <meta property="og:description" content="Harga Grosir & Eceran • Proses Cepat 1x24 Jam • Free Desain Sampai Cocok">
     <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fde047'/%3E%3Cstop offset='55%25' stop-color='%23fbbf24'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='108' height='108' rx='28' fill='%23190e06' stroke='url(%23g)' stroke-width='7'/%3E%3Crect x='41' y='33' width='38' height='17' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='40' width='24' height='10' rx='2' fill='%23190e06'/%3E%3Crect x='30' y='48' width='60' height='24' rx='7' fill='url(%23g)'/%3E%3Ccircle cx='78' cy='58' r='3' fill='%23190e06'/%3E%3Crect x='41' y='68' width='38' height='19' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='69' width='24' height='11' rx='2' fill='%23190e06'/%3E%3C/svg%3E">
     <title>PERCETAKAN ANUGERAH_ART - Katalog & Admin Supabase</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -526,17 +527,40 @@
 
         @media (max-width: 640px) {
             #anugerah-navbar {
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
             }
             .hero-glass-pill {
                 padding: 0.35rem 0.7rem !important;
                 font-size: 9.5px !important;
             }
             #modal-product-detail > div,
-            #modal-cart > div {
+            #modal-cart > div,
+            #modal-cloud-vercel > div,
+            #modal-system-audit > div {
                 border-radius: 1.25rem !important;
             }
+            .admin-input {
+                padding: 9px 14px;
+                font-size: 0.8125rem;
+            }
+            .admin-textarea {
+                padding: 10px 14px;
+                font-size: 0.8125rem;
+            }
+        }
+
+        /* Anti-Overlap & Responsive Polishing untuk Semua Ukuran Layar */
+        .brand-icon-squircle {
+            background-color: #190e06;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.28);
+        }
+        button, a, label, input, select {
+            touch-action: manipulation;
+        }
+        body.dark-mode .admin-mobile-nav-bar {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
         }
     </style>
 </head>
@@ -549,54 +573,54 @@
 
     <!-- GLOBAL NAVIGATION BAR -->
     <header id="anugerah-navbar" class="fixed top-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md text-white z-50 shadow-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center gap-1.5 sm:gap-3">
-            <!-- Sisi Kiri: Tombol Kembali + Logo (Ketuk 5x / Ctrl+Shift) + Nama Toko -->
-            <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 h-14 sm:h-16 flex justify-between items-center gap-1.5 sm:gap-3">
+            <!-- Sisi Kiri: Tombol Kembali + Logo Printer Emas (Ketuk 5x / Ctrl+Shift) + Nama Toko -->
+            <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1 overflow-hidden">
                 <a id="nav-back-btn" href="javascript:void(0)" onclick="return handleBackButtonClick(event)" title="Kembali" aria-label="Kembali" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/40 flex items-center justify-center shadow-sm transition flex-shrink-0 active:scale-95">
                     <i class="fa-solid fa-arrow-left text-xs sm:text-sm"></i>
                     <span id="nav-back-btn-text" class="sr-only">Kembali</span>
                 </a>
 
-                <div onclick="handleLogoTap()" title="Ketuk 5x atau tekan Ctrl+Shift untuk akses Admin" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black border-2 border-[#f59e0b] flex items-center justify-center overflow-hidden shadow cursor-pointer flex-shrink-0 select-none active:scale-95 transition">
-                    <img id="nav-logo-img" src="https://placehold.co/100x100/000000/f59e0b?text=A" alt="Logo" class="w-full h-full object-cover">
+                <div onclick="handleLogoTap()" title="Ketuk 5x atau tekan Ctrl+Shift untuk akses Admin" class="brand-icon-squircle w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center overflow-hidden cursor-pointer flex-shrink-0 select-none active:scale-95 transition">
+                    <img id="nav-logo-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fde047'/%3E%3Cstop offset='55%25' stop-color='%23fbbf24'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='108' height='108' rx='28' fill='%23190e06' stroke='url(%23g)' stroke-width='7'/%3E%3Crect x='41' y='33' width='38' height='17' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='40' width='24' height='10' rx='2' fill='%23190e06'/%3E%3Crect x='30' y='48' width='60' height='24' rx='7' fill='url(%23g)'/%3E%3Ccircle cx='78' cy='58' r='3' fill='%23190e06'/%3E%3Crect x='41' y='68' width='38' height='19' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='69' width='24' height='11' rx='2' fill='%23190e06'/%3E%3C/svg%3E" alt="Logo" class="w-full h-full object-contain">
                 </div>
 
-                <div class="cursor-pointer min-w-0 flex-1 pr-1" onclick="toggleAppMode('public')">
-                    <div class="font-black text-[11px] sm:text-base tracking-tight leading-[1.15] text-white break-words">
-                        <span id="nav-store-name">PERCETAKAN ANUGERAH_ART</span>
+                <div class="cursor-pointer min-w-0 flex-1 pr-0.5" onclick="toggleAppMode('public')">
+                    <div class="font-black text-[11px] sm:text-base tracking-tight leading-tight text-white truncate whitespace-nowrap">
+                        <span id="nav-store-name">ANUGERAH_ART</span>
                     </div>
-                    <p id="nav-store-slogan" class="text-[9px] sm:text-xs text-amber-400 font-semibold leading-tight mt-0.5">Print Your Solution</p>
+                    <p id="nav-store-slogan" class="text-[9.5px] sm:text-xs text-amber-400 font-semibold leading-tight mt-0.5 truncate whitespace-nowrap">Print Your Solution</p>
                 </div>
             </div>
 
             <!-- Sisi Kanan: Aksi Cepat -->
-            <div class="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
-                <div id="nav-realtime-indicator" title="Sinkronisasi Realtime Supabase Aktif di Semua Perangkat" class="hidden xl:flex items-center gap-1.5 bg-emerald-950/90 border border-emerald-600/60 text-emerald-400 px-3 py-1 rounded-full text-[11px] font-extrabold">
+            <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                <div id="nav-realtime-indicator" title="Sinkronisasi Realtime Supabase Aktif di Semua Perangkat" class="hidden xl:flex items-center gap-1.5 bg-emerald-950/90 border border-emerald-600/60 text-emerald-400 px-3 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                     <span id="nav-realtime-text">Supabase Realtime</span>
                 </div>
 
-                <button onclick="toggleDarkMode()" id="nav-theme-toggle-btn" title="Ganti Mode Siang / Malam" class="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-xl border border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition flex-shrink-0">
+                <button onclick="toggleDarkMode()" id="nav-theme-toggle-btn" title="Ganti Mode Siang / Malam" class="w-8 h-8 sm:w-auto sm:h-9 sm:px-3 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-xl border border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition flex-shrink-0">
                     <i id="nav-theme-toggle-icon" class="fa-solid fa-moon text-xs sm:text-sm"></i>
-                    <span id="nav-theme-toggle-label" class="hidden xl:inline">Mode Malam</span>
+                    <span id="nav-theme-toggle-label" class="hidden xl:inline whitespace-nowrap">Mode Malam</span>
                 </button>
 
-                <button onclick="openCartModal()" title="Keranjang Pesanan" class="relative h-8 px-2 sm:h-auto sm:px-3.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 transition flex-shrink-0">
+                <button onclick="openCartModal()" title="Keranjang Pesanan" class="relative h-8 px-2 sm:h-9 sm:px-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 transition flex-shrink-0">
                     <i class="fa-solid fa-cart-shopping text-amber-400 text-[11px] sm:text-sm"></i>
-                    <span class="hidden md:inline">Keranjang</span>
+                    <span class="hidden md:inline whitespace-nowrap">Keranjang</span>
                     <span id="nav-cart-count" class="bg-red-600 text-white text-[9px] sm:text-[10px] font-extrabold min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] px-1 rounded-full flex items-center justify-center">0</span>
                 </button>
 
-                <button onclick="openNavbarChatAdmin()" title="Chat Admin via WhatsApp" class="h-8 w-8 sm:h-auto sm:w-auto sm:px-3.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition flex-shrink-0">
+                <button onclick="openNavbarChatAdmin()" title="Chat Admin via WhatsApp" class="h-8 w-8 sm:h-9 sm:w-auto sm:px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition flex-shrink-0">
                     <i class="fa-brands fa-whatsapp text-sm sm:text-base"></i>
-                    <span id="nav-wa-btn-text" class="hidden sm:inline">Chat Admin</span>
+                    <span id="nav-wa-btn-text" class="hidden sm:inline whitespace-nowrap">Chat Admin</span>
                 </button>
 
-                <div class="flex bg-slate-800 rounded-xl p-0.5 sm:p-1 border border-slate-700 items-center">
-                    <button onclick="toggleAppMode('public')" id="btn-mode-public" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-extrabold theme-bg text-white transition flex items-center gap-1">
+                <div class="flex bg-slate-800 rounded-xl p-0.5 sm:p-1 border border-slate-700 items-center flex-shrink-0">
+                    <button onclick="toggleAppMode('public')" id="btn-mode-public" class="h-7 px-2 sm:h-7 sm:px-3 rounded-lg text-[10px] sm:text-xs font-extrabold theme-bg text-white transition flex items-center justify-center gap-1 whitespace-nowrap">
                         <i class="fa-solid fa-store"></i> <span class="hidden lg:inline">Katalog Produk</span>
                     </button>
-                    <button onclick="requestAdminAccess()" id="btn-mode-admin" class="hide px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-1">
+                    <button onclick="requestAdminAccess()" id="btn-mode-admin" class="hide h-7 px-2 sm:h-7 sm:px-3 rounded-lg text-[10px] sm:text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1 whitespace-nowrap">
                         <i class="fa-solid fa-lock-open text-amber-400"></i> <span class="hidden lg:inline">Panel Admin</span>
                     </button>
                 </div>
@@ -607,25 +631,25 @@
     <div class="h-14 sm:h-16"></div>
 
     <!-- ========================================================== -->
-    <!-- 1. HALAMAN PUBLIK (KATALOG PRODUK & MARKETPLACE RESMI)     -->
+    <!-- 1. HALAMAN PUBLIK (KATALOG PRODUK)                         -->
     <!-- ========================================================== -->
-    <div id="public-view" class="block pb-20">
+    <div id="public-view" class="block pb-12 sm:pb-16">
         
-        <div id="hero-banner" class="gradient-amber-gold text-white text-center py-7 sm:py-12 px-3 sm:px-4 shadow-md relative overflow-hidden transition-all duration-300">
+        <div id="hero-banner" class="gradient-amber-gold text-white text-center py-7 sm:py-12 px-3 sm:px-6 shadow-md relative overflow-hidden transition-all duration-300">
             <div class="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-yellow-200/20 blur-3xl"></div>
             <div class="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-amber-950/30 blur-3xl"></div>
 
-            <button id="btn-quick-edit-banner" onclick="toggleAppMode('admin'); switchAdminTab('settings'); document.getElementById('hero-editor-box')?.scrollIntoView({behavior:'smooth'});" class="hide absolute top-2.5 right-2.5 sm:top-3.5 sm:right-4 z-20 bg-black/45 hover:bg-black/70 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-extrabold px-3 py-1.5 rounded-full backdrop-blur-md flex items-center gap-1.5 shadow transition">
+            <button id="btn-quick-edit-banner" onclick="toggleAppMode('admin'); switchAdminTab('settings'); document.getElementById('hero-editor-box')?.scrollIntoView({behavior:'smooth'});" class="hide absolute top-2.5 right-2.5 sm:top-3.5 sm:right-4 z-20 bg-black/45 hover:bg-black/70 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-extrabold px-2.5 sm:px-3 py-1.5 rounded-full backdrop-blur-md flex items-center gap-1.5 shadow transition">
                 <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Edit Tulisan & Gradien Banner</span>
             </button>
 
             <div class="relative z-10 max-w-5xl mx-auto">
-                <div id="hero-top-badge-wrap" class="inline-flex items-center gap-1.5 sm:gap-2 hero-glass-badge text-white text-[9px] sm:text-[11px] font-extrabold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-2.5 sm:mb-3.5 uppercase tracking-wider sm:tracking-widest shadow-sm">
-                    <i id="hero-top-badge-icon" class="fa-solid fa-wand-magic-sparkles text-yellow-300"></i>
-                    <span id="hero-top-badge-text">OFFICIAL KATALOG & PRODUKSI LANGSUNG</span>
+                <div id="hero-top-badge-wrap" class="inline-flex items-center gap-1.5 sm:gap-2 hero-glass-badge text-white text-[9px] sm:text-[11px] font-extrabold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-2.5 sm:mb-3.5 uppercase tracking-wider sm:tracking-widest shadow-sm max-w-full">
+                    <i id="hero-top-badge-icon" class="fa-solid fa-wand-magic-sparkles text-yellow-300 flex-shrink-0"></i>
+                    <span id="hero-top-badge-text" class="truncate">OFFICIAL KATALOG & PRODUKSI LANGSUNG</span>
                 </div>
-                <h1 id="hero-main-title-text" class="text-xl sm:text-4xl md:text-[42px] font-black mb-1.5 sm:mb-2.5 tracking-tight uppercase drop-shadow-md leading-tight px-1">REKOMENDASI KATALOG PRODUK</h1>
-                <p id="hero-subtitle-wrap" class="text-[11px] sm:text-sm font-bold text-amber-50 flex items-center justify-center gap-1.5 mb-4 sm:mb-6 drop-shadow-sm px-2">
+                <h1 id="hero-main-title-text" class="text-lg sm:text-3xl md:text-[42px] font-black mb-1.5 sm:mb-2.5 tracking-tight uppercase drop-shadow-md leading-tight px-1">REKOMENDASI KATALOG PRODUK</h1>
+                <p id="hero-subtitle-wrap" class="text-[11px] sm:text-sm font-bold text-amber-50 flex items-center justify-center gap-1.5 mb-4 sm:mb-6 drop-shadow-sm px-2 flex-wrap">
                     <i id="hero-subtitle-icon" class="fa-solid fa-fire text-yellow-300"></i>
                     <span id="hero-subtitle-text">Harga Grosir & Eceran • Free Desain Sampai Cocok</span>
                 </p>
@@ -652,12 +676,12 @@
             <div class="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-lg mb-5 sm:mb-8 space-y-3">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3">
                     <div id="public-category-pills" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 sm:flex-wrap"></div>
-                    <div class="flex items-center gap-2 w-full lg:w-auto lg:min-w-[340px]">
-                        <div class="relative flex-1">
-                            <input type="text" id="public-search-input" oninput="renderPublicCatalog()" placeholder="Cari produk cetak..." class="w-full bg-slate-50 border border-slate-300 rounded-full pl-3.5 pr-8 py-2 text-xs sm:text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white shadow-sm transition">
-                            <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto lg:min-w-[340px]">
+                        <div class="relative flex-1 min-w-0">
+                            <input type="text" id="public-search-input" oninput="renderPublicCatalog()" placeholder="Cari produk cetak..." class="w-full bg-slate-50 border border-slate-300 rounded-full pl-3.5 pr-9 py-2 text-xs sm:text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white shadow-sm transition">
+                            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                         </div>
-                        <select id="public-sort-select" onchange="renderPublicCatalog()" class="bg-slate-50 border border-slate-300 rounded-full px-3 py-2 text-[11px] sm:text-xs font-extrabold text-slate-700 outline-none focus:border-amber-500 cursor-pointer shadow-sm flex-shrink-0">
+                        <select id="public-sort-select" onchange="renderPublicCatalog()" class="w-full sm:w-auto bg-slate-50 border border-slate-300 rounded-full px-3.5 py-2 text-xs font-extrabold text-slate-700 outline-none focus:border-amber-500 cursor-pointer shadow-sm flex-shrink-0">
                             <option value="default">✨ Unggulan</option>
                             <option value="bestseller">🔥 Terlaris</option>
                             <option value="price_asc">💰 Termurah</option>
@@ -666,13 +690,13 @@
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-[11px] font-bold text-slate-500">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span id="public-product-counter-label">Menampilkan 12 Produk Katalog Siap Cetak</span>
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                        <span id="public-product-counter-label" class="truncate">Menampilkan 12 Produk Katalog Siap Cetak</span>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-3">
                         <span class="hidden sm:inline text-amber-600 font-extrabold"><i class="fa-solid fa-tags mr-1"></i>Tersedia Diskon Grosir Otomatis</span>
-                        <button type="button" onclick="openNavbarChatAdmin()" class="text-emerald-600 hover:underline font-extrabold flex items-center gap-1">
+                        <button type="button" onclick="openNavbarChatAdmin()" class="text-emerald-600 hover:underline font-extrabold flex items-center gap-1 whitespace-nowrap">
                             <i class="fa-brands fa-whatsapp"></i> Konsultasi Desain Gratis
                         </button>
                     </div>
@@ -680,69 +704,12 @@
             </div>
 
             <!-- Grid Produk Katalog (Infinite Scroll Zero-Lag) -->
-            <div id="public-products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5 mb-6"></div>
+            <div id="public-products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mb-4"></div>
 
             <!-- Sentinel Infinite Scroll Otomatis untuk Ribuan Produk Tanpa Delay -->
-            <div id="catalog-infinite-sentinel" class="py-4 text-center">
+            <div id="catalog-infinite-sentinel" class="py-3 text-center">
                 <span id="catalog-load-more-status" class="inline-flex items-center gap-2 text-xs font-extrabold text-slate-400 px-4 py-1.5 rounded-full"></span>
             </div>
-
-            <!-- Official Marketplace & Social Media Channels -->
-            <section id="public-marketplace-section" class="mt-6 bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-md space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                    <div>
-                        <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                            <i class="fa-solid fa-store text-amber-600"></i> Official Store &amp; Social Media
-                        </span>
-                        <h3 class="text-base sm:text-xl font-black text-slate-900 mt-1.5 uppercase tracking-tight">
-                            Belanja Aman via Marketplace &amp; Ikuti Sosial Media Kami
-                        </h3>
-                    </div>
-                    <p class="text-xs text-slate-500 font-semibold">
-                        Klik tombol di bawah untuk menuju toko resmi <strong class="text-slate-800">ANUGERAH_ART</strong>
-                    </p>
-                </div>
-
-                <div>
-                    <h4 class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                        <i class="fa-solid fa-bag-shopping text-amber-500"></i> Toko Marketplace Resmi:
-                    </h4>
-                    <div id="public-marketplaces-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2.5"></div>
-                </div>
-
-                <div id="public-socials-wrap" class="pt-2 border-t border-slate-100">
-                    <h4 class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                        <i class="fa-solid fa-share-nodes text-emerald-500"></i> Kanal Sosial Media &amp; Katalog Video:
-                    </h4>
-                    <div id="public-socials-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
-                </div>
-            </section>
-
-            <!-- Footer Resmi Toko -->
-            <footer class="mt-8 bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-lg">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                    <div class="flex items-center gap-3.5">
-                        <img id="footer-logo-img" src="https://placehold.co/100x100/000000/f59e0b?text=A" alt="Logo Footer" class="w-12 h-12 rounded-2xl border-2 border-amber-500 object-cover bg-black flex-shrink-0">
-                        <div>
-                            <h4 id="footer-store-name" class="font-black text-base sm:text-lg text-amber-400 uppercase">PERCETAKAN ANUGERAH_ART</h4>
-                            <p id="footer-store-slogan" class="text-xs text-slate-300 font-semibold">Print Your Solution • Kualitas Tajam &amp; Presisi</p>
-                        </div>
-                    </div>
-                    <div class="space-y-1.5">
-                        <p id="footer-store-address" class="text-xs text-slate-300 max-w-md">
-                            <i class="fa-solid fa-location-dot text-amber-500 mr-1.5"></i>ANUGERAH_ART JL BHAYANGKARI NO 117 DS JUWET KENONGO RT 04 RW 02 KEC.PORONG KAB.SIDOARJO
-                        </p>
-                        <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-xs font-extrabold">
-                            <a id="footer-digital-link" href="https://lynk.id/" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline">
-                                <i class="fa-solid fa-link mr-1"></i>Produk Digital &amp; Template
-                            </a>
-                            <button type="button" onclick="openNavbarChatAdmin()" class="text-emerald-400 hover:underline">
-                                <i class="fa-brands fa-whatsapp mr-1"></i>Hubungi Admin
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </footer>
 
         </div>
     </div>
@@ -754,62 +721,64 @@
     <div id="admin-view" class="hide flex flex-col min-h-[calc(100vh-56px)] bg-slate-50">
         
         <!-- TOP ADMIN HEADER BAR -->
-        <div class="admin-top-banner px-4 sm:px-6 py-3.5 text-white shadow-lg">
-            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-[#3b2a10] border border-[#b45309] flex items-center justify-center text-[#fbbf24] text-lg shadow-inner flex-shrink-0">
+        <div class="admin-top-banner px-3 sm:px-6 py-3.5 text-white shadow-lg">
+            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#3b2a10] border border-[#b45309] flex items-center justify-center text-[#fbbf24] text-base sm:text-lg shadow-inner flex-shrink-0">
                         <i class="fa-solid fa-crown"></i>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2.5">
-                        <h2 class="text-base sm:text-xl font-black tracking-tight font-heading">
+                    <div class="flex flex-wrap items-center gap-2 min-w-0">
+                        <h2 class="text-sm sm:text-xl font-black tracking-tight font-heading truncate">
                             <span class="text-white">Panel Admin</span>
-                            <span id="admin-banner-store-name" class="text-[#fbbf24] ml-1">PERCETAKAN ANUGERAH_ART</span>
+                            <span id="admin-banner-store-name" class="text-[#fbbf24] ml-1">ANUGERAH_ART</span>
                         </h2>
-                        <span id="admin-cloud-badge" class="inline-flex items-center gap-1.5 bg-[#064e3b] border border-[#10b981] text-[#6ee7b7] text-[11px] font-extrabold px-3 py-1 rounded-full shadow-sm">
+                        <span id="admin-cloud-badge" class="inline-flex items-center gap-1.5 bg-[#064e3b] border border-[#10b981] text-[#6ee7b7] text-[10px] sm:text-[11px] font-extrabold px-2.5 sm:px-3 py-1 rounded-full shadow-sm whitespace-nowrap">
                             <span class="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
                             <span id="admin-cloud-badge-text">Supabase Realtime Aktif</span>
                         </span>
                     </div>
                 </div>
 
-                <!-- Right Action Buttons (Tanpa Input URL / Key / API di UI Admin) -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <button type="button" onclick="openCloudVercelSetupModal('supabase')" class="bg-[#059669] hover:bg-[#047857] text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                <!-- Right Action Buttons (Grid Rapi di HP, Flex di Desktop) -->
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <button type="button" onclick="openCloudVercelSetupModal('supabase')" class="bg-[#059669] hover:bg-[#047857] text-white text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-database"></i> SQL Backend
                     </button>
-                    <button type="button" onclick="pullFromSupabase()" class="bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <button type="button" onclick="pullFromSupabase()" class="bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-cloud-arrow-down"></i> Tarik Supabase
                     </button>
-                    <button type="button" onclick="syncAllToSupabase()" class="bg-[#ea580c] hover:bg-[#c2410c] text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <button type="button" onclick="syncAllToSupabase()" class="bg-[#ea580c] hover:bg-[#c2410c] text-white text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Supabase
                     </button>
-                    <button type="button" onclick="openCloudVercelSetupModal('vercel')" class="bg-slate-950 hover:bg-black text-white border border-slate-700 text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <button type="button" onclick="openCloudVercelSetupModal('vercel')" class="bg-slate-950 hover:bg-black text-white border border-slate-700 text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <span>▲</span> Deploy Vercel
                     </button>
-                    <button type="button" onclick="openSystemAuditModal()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <button type="button" onclick="openSystemAuditModal()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-stethoscope"></i> Audit Sistem
                     </button>
-                    <button type="button" onclick="downloadJsonBackup()" class="bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <button type="button" onclick="downloadJsonBackup()" class="bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-copy"></i> Backup
                     </button>
-                    <label class="bg-white hover:bg-slate-100 text-slate-900 text-xs font-extrabold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer">
+                    <label class="bg-white hover:bg-slate-100 text-slate-900 text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">
                         <i class="fa-solid fa-file-import text-[#b45309]"></i> Restore
                         <input type="file" accept=".json" onchange="restoreJsonBackup(this)" class="hidden">
                     </label>
-                    <button type="button" onclick="restoreFromAutoVault()" title="Pulihkan Produk dari Brankas Cadangan Otomatis (Auto-Vault)" class="bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-400/50 text-xs font-extrabold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-heart"></i> Pulihkan
-                    </button>
-                    <button type="button" onclick="lockAdminSession()" title="Kunci & Sembunyikan Panel Admin" class="bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 text-xs font-extrabold px-3 py-2 rounded-xl transition">
-                        <i class="fa-solid fa-lock"></i>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="restoreFromAutoVault()" title="Pulihkan Produk dari Brankas Cadangan Otomatis (Auto-Vault)" class="flex-1 bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-400/50 text-[11px] sm:text-xs font-extrabold px-3 py-2 rounded-xl transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                            <i class="fa-solid fa-shield-heart"></i> Pulihkan
+                        </button>
+                        <button type="button" onclick="lockAdminSession()" title="Kunci & Sembunyikan Panel Admin" class="bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 text-xs font-extrabold px-3 py-2 rounded-xl transition flex-shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Bar Status Audit Sinkronisasi Realtime -->
-            <div id="admin-sync-audit-bar" class="max-w-7xl mx-auto mt-3 bg-slate-900/90 border border-slate-700 rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div class="flex flex-wrap items-center gap-3">
+            <div id="admin-sync-audit-bar" class="max-w-7xl mx-auto mt-3 bg-slate-900/90 border border-slate-700 rounded-2xl px-3.5 sm:px-4 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 text-xs">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                     <span class="font-extrabold text-amber-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-satellite-dish animate-pulse"></i> Audit Sync Supabase Realtime:
+                        <i class="fa-solid fa-satellite-dish animate-pulse"></i> Audit Sync Realtime:
                     </span>
                     <span id="audit-local-count" class="bg-slate-800 border border-slate-700 text-slate-200 font-bold px-2.5 py-1 rounded-lg">
                         Lokal: 0 Produk
@@ -821,11 +790,11 @@
                         Menyiapkan koneksi...
                     </span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="forcePushLocalToAllDevices()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                <div class="grid grid-cols-1 sm:flex items-center gap-2 w-full lg:w-auto">
+                    <button type="button" onclick="forcePushLocalToAllDevices()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] px-3 py-2 sm:py-1.5 rounded-lg shadow transition flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Jadikan Data Ini Utama di Semua Perangkat
                     </button>
-                    <button type="button" onclick="pullFromSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-[11px] px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                    <button type="button" onclick="pullFromSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-[11px] px-3 py-2 sm:py-1.5 rounded-lg shadow transition flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-rotate"></i> Samakan dari Supabase
                     </button>
                 </div>
@@ -833,16 +802,16 @@
         </div>
 
         <div class="flex flex-col md:flex-row flex-1">
-        <!-- Mobile Top Navigation Bar for Admin -->
-        <div class="md:hidden bg-white border-b border-slate-200 px-3 py-2 flex overflow-x-auto gap-2 sticky top-14 z-30">
-            <button onclick="switchAdminTab('dashboard')" class="admin-mobile-tab px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-700" data-tab="dashboard">
-                <i class="fa-solid fa-house-chimney text-amber-600 mr-1"></i> Dashboard
+        <!-- Mobile Top Navigation Bar for Admin (3 Tab Sejajar Penuh Tanpa Terpotong) -->
+        <div class="admin-mobile-nav-bar md:hidden bg-white border-b border-slate-200 px-2.5 py-2 grid grid-cols-3 gap-1.5 sticky top-14 z-30 shadow-sm">
+            <button onclick="switchAdminTab('dashboard')" class="admin-mobile-tab px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 flex items-center justify-center gap-1 truncate" data-tab="dashboard">
+                <i class="fa-solid fa-house-chimney text-amber-600"></i> <span>Dashboard</span>
             </button>
-            <button onclick="switchAdminTab('products')" class="admin-mobile-tab px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-700" data-tab="products">
-                <i class="fa-solid fa-box-open text-emerald-600 mr-1"></i> Produk & Variasi
+            <button onclick="switchAdminTab('products')" class="admin-mobile-tab px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 flex items-center justify-center gap-1 truncate" data-tab="products">
+                <i class="fa-solid fa-box-open text-emerald-600"></i> <span>Produk</span>
             </button>
-            <button onclick="switchAdminTab('settings')" class="admin-mobile-tab px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-700" data-tab="settings">
-                <i class="fa-solid fa-gear text-amber-500 mr-1"></i> Pengaturan
+            <button onclick="switchAdminTab('settings')" class="admin-mobile-tab px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 flex items-center justify-center gap-1 truncate" data-tab="settings">
+                <i class="fa-solid fa-gear text-amber-500"></i> <span>Pengaturan</span>
             </button>
         </div>
 
@@ -872,30 +841,30 @@
         </aside>
 
         <!-- Main Admin Content Area -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main class="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
             
             <!-- ========================================== -->
             <!-- VIEW 1: DASHBOARD UTAMA                    -->
             <!-- ========================================== -->
             <div id="view-dashboard" class="admin-view hide max-w-6xl mx-auto space-y-6">
-                <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <div>
-                        <span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full">WEBAPP BUILDER SUPABASE • REAL-TIME MULTI-DEVICE</span>
-                        <h2 class="text-2xl font-extrabold text-slate-800 mt-2">Selamat Datang di Dashboard ANUGERAH_ART</h2>
-                        <p class="text-sm text-slate-500">Kelola ribuan produk, variasi harga, foto HD, dan link marketplace dengan sinkronisasi otomatis ke seluruh perangkat.</p>
+                <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="min-w-0">
+                        <span class="bg-amber-100 text-amber-800 text-[10px] sm:text-xs font-extrabold px-3 py-1 rounded-full">WEBAPP BUILDER SUPABASE • REAL-TIME MULTI-DEVICE</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-800 mt-2">Selamat Datang di Dashboard ANUGERAH_ART</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Kelola ribuan produk, variasi harga, dan foto HD dengan sinkronisasi otomatis ke seluruh perangkat.</p>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="switchAdminTab('products'); resetProductForm();" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <button onclick="switchAdminTab('products'); resetProductForm();" class="flex-1 sm:flex-initial bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-plus"></i> Tambah Produk Baru
                         </button>
-                        <button onclick="toggleAppMode('public')" class="bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
+                        <button onclick="toggleAppMode('public')" class="flex-1 sm:flex-initial bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-eye"></i> Lihat Katalog Publik
                         </button>
                     </div>
                 </div>
 
                 <!-- Statistik Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                     <div onclick="switchAdminTab('products'); setAdminProductFilter('all');" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
                         <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center mb-3">
                             <i class="fa-solid fa-boxes-stacked"></i>
@@ -931,19 +900,19 @@
 
                 <!-- Ringkasan Cepat Produk & Pintasan Menu -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-                            <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 gap-2">
+                            <h3 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                                 <i class="fa-solid fa-ranking-star text-amber-500"></i> Daftar Produk Unggulan Terkini
                             </h3>
-                            <button onclick="switchAdminTab('products')" class="text-xs font-bold text-amber-600 hover:underline">Kelola Semua Produk →</button>
+                            <button onclick="switchAdminTab('products')" class="text-xs font-bold text-amber-600 hover:underline whitespace-nowrap">Kelola Semua →</button>
                         </div>
                         <div id="dashboard-recent-products" class="space-y-3"></div>
                     </div>
 
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4">
                         <div>
-                            <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+                            <h3 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
                                 <i class="fa-solid fa-bolt text-emerald-500"></i> Pintasan Cepat Admin
                             </h3>
                             <div class="space-y-2.5">
@@ -966,12 +935,12 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 text-white p-4 rounded-xl">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-bold text-amber-400"><i class="fa-solid fa-database mr-1"></i> Zero-Lag Engine + Supabase CDN</span>
-                                <span class="text-[10px] bg-emerald-600 px-2 py-0.5 rounded-full font-bold">Realtime Aktif</span>
+                        <div class="bg-slate-900 text-white p-4 rounded-xl space-y-1.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-database"></i> Zero-Lag Engine + Supabase CDN</span>
+                                <span class="text-[10px] bg-emerald-600 text-white px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap flex-shrink-0">Realtime Aktif</span>
                             </div>
-                            <p class="text-[11px] text-slate-300">Mendukung ribuan produk & puluhan ribu foto HD tanpa delay dengan IndexedDB + Supabase Realtime.</p>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">Mendukung ribuan produk &amp; puluhan ribu foto HD tanpa delay dengan IndexedDB + Supabase Realtime.</p>
                         </div>
                     </div>
                 </div>
@@ -981,27 +950,27 @@
             <!-- ============================================================ -->
             <!-- VIEW 2: KELOLA PRODUK, VARIASI & 15 FOTO HD                  -->
             <!-- ============================================================ -->
-            <div id="view-products" class="admin-view hide max-w-5xl mx-auto space-y-8">
+            <div id="view-products" class="admin-view hide max-w-5xl mx-auto space-y-6 sm:space-y-8">
                 
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5 mb-3">
-                        <span>📦</span> Kelola Produk, Variasi & 15 Foto Produk HD
+                    <h2 class="text-lg sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2.5 mb-3">
+                        <span>📦</span> Kelola Produk, Variasi &amp; 15 Foto Produk HD
                     </h2>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <button onclick="openBulkUploadModal()" class="bg-[#048454] hover:bg-[#036c45] text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full shadow-sm transition flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                        <button onclick="openBulkUploadModal()" class="bg-[#048454] hover:bg-[#036c45] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-full shadow-sm transition flex items-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up"></i> 🚀 Upload Banyak Produk Sekaligus
                         </button>
-                        <button onclick="resetProductForm(true)" class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs sm:text-sm font-extrabold px-5 py-2.5 rounded-full shadow-sm transition flex items-center gap-1.5">
+                        <button onclick="resetProductForm(true)" class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs sm:text-sm font-extrabold px-4 sm:px-5 py-2.5 rounded-full shadow-sm transition flex items-center gap-1.5">
                             + Produk Baru
                         </button>
                     </div>
                 </div>
 
                 <!-- MAIN PRODUCT FORM CONTAINER -->
-                <div id="product-form-card" class="admin-form-box p-5 sm:p-7 shadow-sm space-y-6">
+                <div id="product-form-card" class="admin-form-box p-4 sm:p-7 shadow-sm space-y-5 sm:space-y-6">
                     
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <span id="form-mode-badge" class="inline-block bg-[#ea930c] text-white text-[11px] font-extrabold px-4 py-1.5 rounded-full tracking-wide uppercase">
+                        <span id="form-mode-badge" class="inline-block bg-[#ea930c] text-white text-[10px] sm:text-[11px] font-extrabold px-3.5 sm:px-4 py-1.5 rounded-full tracking-wide uppercase">
                             MODE: TAMBAH PRODUK BARU (UNLIMITED PRODUK)
                         </span>
                         <button id="btn-cancel-edit" onclick="resetProductForm()" class="hide text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1 rounded-full transition">
@@ -1033,7 +1002,7 @@
                     </div>
 
                     <!-- Row 2: Harga Dasar, Diskon (%), Terjual, Rating -->
-                    <div id="price-stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div id="price-stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                         <div id="base-price-wrapper">
                             <label class="block text-xs font-extrabold text-slate-700 text-center mb-2">Harga Dasar (Rp)</label>
                             <input type="number" id="prod-base-price" value="0" min="0" class="admin-input">
@@ -1060,24 +1029,24 @@
 
                     <!-- Row 4: Tag Kategori Spesial & Status Pre-Order (PO) -->
                     <div class="admin-inner-box p-4 sm:p-5">
-                        <label class="block text-xs font-extrabold text-slate-800 mb-3">Tag Kategori Spesial & Status Pre-Order (PO):</label>
-                        <div class="flex flex-wrap items-center gap-3">
-                            <label class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-pink-200 bg-[#fff5f7] text-[#be123c] text-xs font-extrabold cursor-pointer select-none hover:bg-pink-100/70 transition">
+                        <label class="block text-xs font-extrabold text-slate-800 mb-3">Tag Kategori Spesial &amp; Status Pre-Order (PO):</label>
+                        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                            <label class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl border border-pink-200 bg-[#fff5f7] text-[#be123c] text-xs font-extrabold cursor-pointer select-none hover:bg-pink-100/70 transition">
                                 <input type="checkbox" id="prod-is-promo" checked class="w-4 h-4 accent-[#e11d48] rounded cursor-pointer">
                                 <span>🔥 Produk Promo</span>
                             </label>
 
-                            <label class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-amber-300 bg-[#fffbeb] text-[#92400e] text-xs font-extrabold cursor-pointer select-none hover:bg-amber-100/70 transition">
+                            <label class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl border border-amber-300 bg-[#fffbeb] text-[#92400e] text-xs font-extrabold cursor-pointer select-none hover:bg-amber-100/70 transition">
                                 <input type="checkbox" id="prod-is-bestseller" class="w-4 h-4 accent-amber-600 rounded cursor-pointer">
                                 <span>🏆 Best Seller</span>
                             </label>
 
-                            <label class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border border-purple-200 bg-[#faf5ff] text-[#6b21a8] text-xs font-extrabold cursor-pointer select-none hover:bg-purple-100/70 transition">
+                            <label class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl border border-purple-200 bg-[#faf5ff] text-[#6b21a8] text-xs font-extrabold cursor-pointer select-none hover:bg-purple-100/70 transition">
                                 <input type="checkbox" id="prod-is-preorder" onchange="togglePreOrderDaysInput()" class="w-4 h-4 accent-purple-600 rounded cursor-pointer">
                                 <span>⏳ Pre-Order (PO)</span>
                             </label>
 
-                            <div id="po-days-wrapper" class="hide flex items-center gap-2 ml-2">
+                            <div id="po-days-wrapper" class="hide flex items-center gap-2">
                                 <span class="text-xs font-bold text-purple-800">Estimasi Hari PO:</span>
                                 <input type="number" id="prod-po-days" value="3" min="1" class="w-20 border border-purple-300 rounded-xl px-3 py-1.5 text-xs font-bold text-purple-900">
                             </div>
@@ -1085,24 +1054,24 @@
                     </div>
 
                     <!-- Row 5: Jenis Produk -->
-                    <div class="admin-inner-box px-5 py-4 bg-[#fef9e7] flex flex-wrap items-center justify-between gap-4">
+                    <div class="admin-inner-box px-4 sm:px-5 py-4 bg-[#fef9e7] flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                         <span class="text-xs font-extrabold text-slate-900">Jenis Produk:</span>
-                        <div class="flex flex-wrap items-center gap-6">
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
                             <label class="inline-flex items-center gap-2 text-xs font-extrabold text-slate-800 cursor-pointer">
                                 <input type="radio" name="prod-variation-mode" id="radio-no-var" value="single" checked onchange="handleVariationModeChange('single')" class="w-4 h-4 accent-blue-600 cursor-pointer">
                                 <span>Tanpa Variasi (Harga Tunggal)</span>
                             </label>
                             <label class="inline-flex items-center gap-2 text-xs font-extrabold text-slate-800 cursor-pointer">
                                 <input type="radio" name="prod-variation-mode" id="radio-with-var" value="varied" onchange="handleVariationModeChange('varied')" class="w-4 h-4 accent-blue-600 cursor-pointer">
-                                <span>Dengan Variasi (Beda Harga & Opsi)</span>
+                                <span>Dengan Variasi (Beda Harga &amp; Opsi)</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Row 6: Kelola Grup & Opsi Variasi -->
-                    <div id="variation-manager-box" class="admin-inner-box p-5 hide space-y-4">
+                    <div id="variation-manager-box" class="admin-inner-box p-4 sm:p-5 hide space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <h4 class="text-xs font-extrabold text-slate-900">Kelola Grup & Opsi Variasi (Tanpa Batas)</h4>
+                            <h4 class="text-xs font-extrabold text-slate-900">Kelola Grup &amp; Opsi Variasi (Tanpa Batas)</h4>
                             <button type="button" onclick="addVariationGroup()" class="bg-[#f59e0b] hover:bg-[#d97706] text-white text-xs font-extrabold px-4 py-2 rounded-full shadow-sm transition">
                                 + Tambah Grup Variasi Baru
                             </button>
@@ -1112,7 +1081,7 @@
                     </div>
 
                     <!-- Row 7: Skema Diskon Grosir % -->
-                    <div class="admin-inner-box px-5 py-4 space-y-3">
+                    <div class="admin-inner-box px-4 sm:px-5 py-4 space-y-3">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span class="text-xs font-extrabold text-slate-900">Skema Diskon Grosir %</span>
                             <button type="button" onclick="addWholesaleTier()" class="bg-[#fef3c7] hover:bg-[#fde68a] text-[#92400e] text-xs font-extrabold px-4 py-1.5 rounded-full transition">
@@ -1123,7 +1092,7 @@
                     </div>
 
                     <!-- Row 8: Galeri Foto Produk HD (Maksimal 15 Foto - Supabase CDN) -->
-                    <div class="admin-inner-box p-5 space-y-4">
+                    <div class="admin-inner-box p-4 sm:p-5 space-y-4">
                         <div>
                             <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                                 <span>📸</span> Galeri Foto Produk HD (Maksimal 15 Foto - Anti-Pecah Supabase CDN):
@@ -1141,11 +1110,11 @@
                             </label>
                         </div>
 
-                        <div class="border border-[#f5d076] bg-[#fffdf7] rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="border border-[#f5d076] bg-[#fffdf7] rounded-xl px-3.5 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                             <span class="font-extrabold text-[#78350f] flex items-center gap-1.5">
                                 <span>📸</span> Galeri Aktif: <span id="active-photo-count">0</span> / 15 Foto Terisi
                             </span>
-                            <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                                 <label class="inline-flex items-center gap-1.5 font-extrabold text-[#047857] cursor-pointer">
                                     <input type="checkbox" id="auto-save-supabase-cdn" checked class="w-4 h-4 accent-[#059669] rounded">
                                     <span>☁️ Auto-Simpan Foto ke Supabase HD CDN</span>
@@ -1156,51 +1125,21 @@
                             </div>
                         </div>
 
-                        <div id="photo-slots-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3.5 max-h-[430px] overflow-y-auto custom-scroll pr-2 py-1"></div>
+                        <div id="photo-slots-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3.5 max-h-[430px] overflow-y-auto custom-scroll pr-1 sm:pr-2 py-1"></div>
                     </div>
 
                     <!-- Row 9: Video Produk HD -->
-                    <div class="admin-inner-box p-5 space-y-3">
+                    <div class="admin-inner-box p-4 sm:p-5 space-y-3">
                         <label class="block text-xs sm:text-sm font-extrabold text-slate-900 text-center">
                             🎬 Video Produk HD (MP4 / WebM ke Supabase CDN atau URL YouTube):
                         </label>
                         <input type="text" id="prod-video-url" placeholder="https://...mp4 atau URL YouTube" class="admin-input">
                         <div class="flex items-center gap-3 pt-1">
-                            <label class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs font-extrabold px-5 py-2.5 rounded-full shadow-sm cursor-pointer transition">
+                            <label class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs font-extrabold px-5 py-2.5 rounded-full shadow-sm cursor-pointer transition flex-shrink-0">
                                 Choose File
                                 <input type="file" id="prod-video-file" accept="video/mp4,video/webm" onchange="handleVideoFileSelect(this)" class="hidden">
                             </label>
-                            <span id="prod-video-filename" class="text-xs text-slate-500">No file chosen</span>
-                        </div>
-                    </div>
-
-                    <!-- Row 9B: Link Marketplace Spesifik Produk -->
-                    <div class="admin-inner-box p-5 space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <label class="block text-xs sm:text-sm font-extrabold text-slate-900">
-                                🛒 Link Checkout Marketplace Produk Ini (Opsional - Tersimpan di Supabase):
-                            </label>
-                            <span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                                Jika dikosongkan otomatis memakai link Marketplace Toko Utama
-                            </span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1"><i class="fa-solid fa-bag-shopping text-orange-600 mr-1"></i>Link Produk di Shopee:</label>
-                                <input type="url" id="prod-mp-shopee" placeholder="https://id.shp.ee/..." class="admin-input py-2 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1"><i class="fa-solid fa-store text-emerald-600 mr-1"></i>Link Produk di Tokopedia:</label>
-                                <input type="url" id="prod-mp-tokopedia" placeholder="https://tk.tokopedia.com/..." class="admin-input py-2 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1"><i class="fa-brands fa-tiktok text-slate-900 mr-1"></i>Link Produk di TikTok Shop:</label>
-                                <input type="url" id="prod-mp-tiktok" placeholder="https://vt.tiktok.com/..." class="admin-input py-2 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1"><i class="fa-solid fa-cart-shopping text-blue-700 mr-1"></i>Link Lazada / Blibli / Custom:</label>
-                                <input type="url" id="prod-mp-lazada" placeholder="https://www.lazada.co.id/..." class="admin-input py-2 text-xs">
-                            </div>
+                            <span id="prod-video-filename" class="text-xs text-slate-500 truncate">No file chosen</span>
                         </div>
                     </div>
 
@@ -1213,29 +1152,29 @@
 
                 <!-- DAFTAR PRODUK & EDIT MASSAL -->
                 <div class="space-y-4">
-                    <div class="admin-form-box p-5 space-y-4 shadow-sm">
+                    <div class="admin-form-box p-4 sm:p-5 space-y-4 shadow-sm">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div class="flex flex-wrap items-center gap-2">
-                                <button type="button" onclick="setAdminProductFilter('all')" id="adm-filter-all" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-slate-900 text-white transition">
+                                <button type="button" onclick="setAdminProductFilter('all')" id="adm-filter-all" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-slate-900 text-white transition">
                                     Semua (<span id="count-adm-all">12</span>)
                                 </button>
-                                <button type="button" onclick="setAdminProductFilter('promo')" id="adm-filter-promo" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-pink-300 text-slate-800 hover:bg-pink-50 transition">
+                                <button type="button" onclick="setAdminProductFilter('promo')" id="adm-filter-promo" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-pink-300 text-slate-800 hover:bg-pink-50 transition">
                                     🔥 Promo (<span id="count-adm-promo">8</span>)
                                 </button>
-                                <button type="button" onclick="setAdminProductFilter('bestseller')" id="adm-filter-bestseller" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-amber-300 text-slate-800 hover:bg-amber-50 transition">
+                                <button type="button" onclick="setAdminProductFilter('bestseller')" id="adm-filter-bestseller" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-amber-300 text-slate-800 hover:bg-amber-50 transition">
                                     🏆 Best Seller (<span id="count-adm-bestseller">9</span>)
                                 </button>
-                                <button type="button" onclick="setAdminProductFilter('preorder')" id="adm-filter-preorder" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-purple-300 text-slate-800 hover:bg-purple-50 transition">
+                                <button type="button" onclick="setAdminProductFilter('preorder')" id="adm-filter-preorder" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-purple-300 text-slate-800 hover:bg-purple-50 transition">
                                     ⏳ Pre-Order (<span id="count-adm-preorder">0</span>)
                                 </button>
                             </div>
 
-                            <div class="flex-1 min-w-[240px] max-w-sm ml-auto">
+                            <div class="w-full sm:flex-1 sm:min-w-[240px] sm:max-w-sm sm:ml-auto">
                                 <input type="text" id="admin-product-search" oninput="renderAdminProductList()" placeholder="Cari nama / kategori produk..." class="admin-input py-2">
                             </div>
                         </div>
 
-                        <div class="admin-inner-box p-4 space-y-3.5">
+                        <div class="admin-inner-box p-3.5 sm:p-4 space-y-3.5">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <label class="inline-flex items-center gap-2.5 text-xs font-extrabold text-slate-900 cursor-pointer">
                                     <input type="checkbox" id="bulk-select-all" onchange="toggleSelectAllProducts(this.checked)" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
@@ -1243,29 +1182,29 @@
                                 </label>
 
                                 <div class="flex flex-wrap items-center gap-1.5">
-                                    <button type="button" onclick="cleanDuplicateProductsInCatalog()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full transition" title="Hapus otomatis kartu produk kembar / duplikat">
+                                    <button type="button" onclick="cleanDuplicateProductsInCatalog()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-full transition" title="Hapus otomatis kartu produk kembar / duplikat">
                                         🧹 Bersihkan Duplikat
                                     </button>
-                                    <button type="button" onclick="runBulkQuickAction('duplicate')" class="bg-[#2563eb] hover:bg-blue-700 text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full transition">
+                                    <button type="button" onclick="runBulkQuickAction('duplicate')" class="bg-[#2563eb] hover:bg-blue-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-full transition">
                                         📋 Duplikat
                                     </button>
-                                    <button type="button" onclick="runBulkQuickAction('promo')" class="bg-[#e11d48] hover:bg-rose-700 text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full transition">
+                                    <button type="button" onclick="runBulkQuickAction('promo')" class="bg-[#e11d48] hover:bg-rose-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-full transition">
                                         + Promo
                                     </button>
-                                    <button type="button" onclick="runBulkQuickAction('bestseller')" class="bg-[#fbbf24] hover:bg-amber-500 text-slate-900 text-[11px] font-extrabold px-3.5 py-1.5 rounded-full transition">
+                                    <button type="button" onclick="runBulkQuickAction('bestseller')" class="bg-[#fbbf24] hover:bg-amber-500 text-slate-900 text-[11px] font-extrabold px-3 py-1.5 rounded-full transition">
                                         + Best Seller
                                     </button>
-                                    <button type="button" onclick="runBulkQuickAction('delete')" class="bg-[#ef4444] hover:bg-red-600 text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full transition">
+                                    <button type="button" onclick="runBulkQuickAction('delete')" class="bg-[#ef4444] hover:bg-red-600 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-full transition">
                                         🗑️ Hapus
                                     </button>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                                <input type="text" id="bulk-input-category" placeholder="Kategori Massal..." class="border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-amber-400">
-                                <input type="number" id="bulk-input-discount" placeholder="Diskon %" min="0" max="99" class="border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-amber-400">
-                                <input type="number" id="bulk-input-price" placeholder="Harga Dasar" min="0" class="border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-amber-400">
-                                <input type="number" id="bulk-input-podays" placeholder="Hari PO" min="0" class="border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-amber-400">
+                                <input type="text" id="bulk-input-category" placeholder="Kategori Massal..." class="border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-400">
+                                <input type="number" id="bulk-input-discount" placeholder="Diskon %" min="0" max="99" class="border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-400">
+                                <input type="number" id="bulk-input-price" placeholder="Harga Dasar" min="0" class="border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-400">
+                                <input type="number" id="bulk-input-podays" placeholder="Hari PO" min="0" class="border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-400">
                                 <button type="button" onclick="applyBulkInputs()" class="col-span-2 sm:col-span-1 bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs py-2.5 rounded-xl transition">
                                     Terapkan
                                 </button>
@@ -1273,7 +1212,7 @@
                         </div>
                     </div>
 
-                    <div id="admin-products-list" class="max-h-[600px] overflow-y-auto custom-scroll space-y-3 pr-2"></div>
+                    <div id="admin-products-list" class="max-h-[600px] overflow-y-auto custom-scroll space-y-3 pr-1 sm:pr-2"></div>
                 </div>
 
             </div>
@@ -1282,10 +1221,10 @@
             <!-- ========================================================================= -->
             <!-- VIEW 3: PENGATURAN TOKO (TANPA INPUT URL/KEY/API DI UI ADMIN)             -->
             <!-- ========================================================================= -->
-            <div id="view-settings" class="admin-view hide max-w-6xl mx-auto space-y-7 pb-12">
+            <div id="view-settings" class="admin-view hide max-w-6xl mx-auto space-y-6 sm:space-y-7 pb-12">
 
                 <!-- SECTION 1: IDENTITAS TOKO, TOMBOL KEMBALI, LOGO & WHATSAPP ADMIN -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
                         <div>
                             <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
@@ -1293,7 +1232,7 @@
                             </h3>
                             <p class="text-xs text-slate-500 mt-0.5">Perubahan otomatis tersimpan ke Supabase dan tampil real-time di seluruh perangkat pelanggan.</p>
                         </div>
-                        <button type="button" onclick="saveStoreSettings(); showToast('Identitas & Pengaturan Toko berhasil disimpan!', 'success');" class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-950 text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-sm transition">
+                        <button type="button" onclick="saveStoreSettings(); showToast('Identitas & Pengaturan Toko berhasil disimpan!', 'success');" class="w-full sm:w-auto bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-950 text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-sm transition">
                             <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Identitas
                         </button>
                     </div>
@@ -1315,12 +1254,12 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-extrabold text-slate-700 mb-1.5">Alamat Lengkap Workshop (Tampil di Footer &amp; Nota PDF A6)</label>
+                            <label class="block text-xs font-extrabold text-slate-700 mb-1.5">Alamat Lengkap Workshop (Tampil di Nota PDF A6)</label>
                             <input type="text" id="setting-store-address" value="ANUGERAH_ART JL BHAYANGKARI NO 117 DS JUWET KENONGO RT 04 RW 02 KEC.PORONG KAB.SIDOARJO" oninput="saveStoreSettings()" class="admin-input">
                         </div>
                         <div>
                             <label class="block text-xs font-extrabold text-slate-700 mb-1.5">Link Tujuan Tombol Kembali (Ikon ← di Kiri Atas)</label>
-                            <div class="flex items-center gap-2">
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                                 <input type="url" id="setting-back-url" value="" oninput="handleBackUrlTyping(this.value)" onblur="commitBackUrlInput(this.value)" placeholder="https://... (Kosongkan untuk kembali otomatis)" class="admin-input flex-1">
                                 <button type="button" onclick="saveBackUrlButton()" class="bg-slate-900 hover:bg-black text-amber-400 text-xs font-extrabold px-4 py-2.5 rounded-full whitespace-nowrap">Simpan Link</button>
                             </div>
@@ -1348,17 +1287,20 @@
                             <label class="block text-xs font-extrabold text-slate-700 mb-1.5">Pesan Sapaan Chat Admin WhatsApp</label>
                             <textarea id="setting-wa-greeting" rows="2" oninput="saveStoreSettings()" class="admin-textarea"></textarea>
                         </div>
-                        <div class="flex items-center gap-3 bg-[#fffdf7] border border-[#f5d076] rounded-2xl p-3.5">
-                            <img id="setting-logo-preview" src="https://placehold.co/120x120/000000/f59e0b?text=A" alt="Logo" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-500 bg-black flex-shrink-0">
-                            <div class="flex-1 min-w-0 space-y-1.5">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-[#fffdf7] border border-[#f5d076] rounded-2xl p-3.5">
+                            <img id="setting-logo-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fde047'/%3E%3Cstop offset='55%25' stop-color='%23fbbf24'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='108' height='108' rx='28' fill='%23190e06' stroke='url(%23g)' stroke-width='7'/%3E%3Crect x='41' y='33' width='38' height='17' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='40' width='24' height='10' rx='2' fill='%23190e06'/%3E%3Crect x='30' y='48' width='60' height='24' rx='7' fill='url(%23g)'/%3E%3Ccircle cx='78' cy='58' r='3' fill='%23190e06'/%3E%3Crect x='41' y='68' width='38' height='19' rx='5' fill='url(%23g)'/%3E%3Crect x='48' y='69' width='24' height='11' rx='2' fill='%23190e06'/%3E%3C/svg%3E" alt="Logo" class="brand-icon-squircle w-14 h-14 rounded-2xl object-contain flex-shrink-0">
+                            <div class="flex-1 min-w-0 w-full space-y-1.5">
                                 <label class="block text-xs font-extrabold text-slate-800">Logo Toko (Navbar &amp; Nota PDF A6)</label>
                                 <input type="text" id="setting-logo-url" placeholder="URL Logo atau Upload File..." oninput="updateLogoFromInput(this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
-                                <div class="flex items-center gap-2">
-                                    <label class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-[11px] font-extrabold px-3 py-1 rounded-lg cursor-pointer">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <label class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-[11px] font-extrabold px-3 py-1.5 rounded-lg cursor-pointer">
                                         Upload Logo
                                         <input type="file" accept="image/*" onchange="handleLogoFileUpload(this)" class="hidden">
                                     </label>
-                                    <span id="setting-logo-filename" class="text-[10px] text-slate-500 truncate">Default</span>
+                                    <button type="button" onclick="resetDefaultPrinterLogo()" class="bg-slate-900 hover:bg-black text-amber-400 text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg">
+                                        Ikon Printer Emas
+                                    </button>
+                                    <span id="setting-logo-filename" class="text-[10px] text-slate-500 truncate">Ikon Printer Emas</span>
                                 </div>
                             </div>
                         </div>
@@ -1366,7 +1308,7 @@
                 </div>
 
                 <!-- SECTION 2: STUDIO TEMA, BINGKAI FOTO & EDITOR BANNER BERANDA -->
-                <div id="hero-editor-box" class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
+                <div id="hero-editor-box" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
                         <div>
                             <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
@@ -1374,7 +1316,7 @@
                             </h3>
                             <p class="text-xs text-slate-500 mt-0.5">Sesuaikan Mode Siang/Malam, warna bingkai foto produk, gradien banner, dan tulisan unggulan.</p>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <button type="button" id="btn-theme-light" onclick="setDisplayMode(false)" class="bg-[#f59e0b] border-2 border-[#d97706] text-slate-950 font-black py-2 px-3.5 rounded-xl text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-sun"></i> Mode Siang
                             </button>
@@ -1387,18 +1329,18 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div class="border border-slate-200 rounded-2xl p-3 flex items-center gap-3">
-                            <input type="color" id="col-photo-frame" value="#0d7a43" onchange="updateCustomColor('photoFrameColor', this.value)" class="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent">
-                            <div>
-                                <p class="text-[11px] font-extrabold text-slate-800">Bingkai Foto</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="border border-slate-200 rounded-2xl p-3 flex items-center gap-3 min-w-0">
+                            <input type="color" id="col-photo-frame" value="#0d7a43" onchange="updateCustomColor('photoFrameColor', this.value)" class="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent flex-shrink-0">
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-extrabold text-slate-800 truncate">Bingkai Foto</p>
                                 <span id="txt-photo-frame" class="text-[10px] font-mono text-slate-500">#0d7a43</span>
                             </div>
                         </div>
-                        <div class="border border-slate-200 rounded-2xl p-3 flex items-center gap-3">
-                            <input type="color" id="col-accent-gold" value="#f59e0b" onchange="updateCustomColor('primaryColor', this.value)" class="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent">
-                            <div>
-                                <p class="text-[11px] font-extrabold text-slate-800">Warna Aksen</p>
+                        <div class="border border-slate-200 rounded-2xl p-3 flex items-center gap-3 min-w-0">
+                            <input type="color" id="col-accent-gold" value="#f59e0b" onchange="updateCustomColor('primaryColor', this.value)" class="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent flex-shrink-0">
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-extrabold text-slate-800 truncate">Warna Aksen</p>
                                 <span id="txt-accent-gold" class="text-[10px] font-mono text-slate-500">#f59e0b</span>
                             </div>
                         </div>
@@ -1443,28 +1385,12 @@
                     </div>
                 </div>
 
-                <!-- SECTION 3: KELOLA MARKETPLACE RESMI & SOSIAL MEDIA (SUPABASE) -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                        <div>
-                            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
-                                <i class="fa-solid fa-bag-shopping text-amber-500"></i> 3. Kelola Link Toko Marketplace Resmi &amp; Sosial Media
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Tersimpan permanen di tabel <code>public.marketplaces</code> Supabase &amp; tampil di Beranda serta Modal Produk.</p>
-                        </div>
-                        <button type="button" onclick="addNewMarketplaceChannel()" class="bg-[#048454] hover:bg-[#036c45] text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-sm transition">
-                            + Tambah Marketplace / Sosmed Baru
-                        </button>
-                    </div>
-                    <div id="admin-marketplaces-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
-                </div>
-
-                <!-- SECTION 4: SINKRONISASI CLOUD REALTIME (BEBAS INPUT URL/KEY/API DI UI) -->
-                <div class="bg-emerald-50 border border-emerald-300 rounded-3xl p-6 sm:p-7 shadow-sm">
+                <!-- SECTION 3: SINKRONISASI CLOUD REALTIME (BEBAS INPUT URL/KEY/API DI UI) -->
+                <div class="bg-emerald-50 border border-emerald-300 rounded-3xl p-5 sm:p-7 shadow-sm">
                     <div class="flex flex-wrap justify-between items-start gap-2 mb-5">
                         <div>
-                            <h3 class="font-bold text-emerald-800 text-lg flex items-center gap-2">
-                                <i class="fa-solid fa-bolt text-amber-500"></i> 4. Sinkronisasi Supabase Realtime (Vercel + Supabase)
+                            <h3 class="font-bold text-emerald-800 text-base sm:text-lg flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-amber-500"></i> 3. Sinkronisasi Supabase Realtime (Vercel + Supabase)
                             </h3>
                             <p class="text-xs text-emerald-700 mt-1">
                                 Kredensial URL, Key, dan API dikelola secara aman di konfigurasi internal aplikasi (tidak ditampilkan di Panel Admin).
@@ -1476,14 +1402,14 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="testSupabaseConnection()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow transition">
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                            <button type="button" onclick="testSupabaseConnection()" class="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-check"></i> Tes Koneksi Supabase
                             </button>
-                            <button type="button" onclick="syncAllToSupabase()" class="bg-slate-900 hover:bg-black text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow transition">
+                            <button type="button" onclick="syncAllToSupabase()" class="flex-1 sm:flex-initial bg-slate-900 hover:bg-black text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-cloud-arrow-up"></i> Simpan &amp; Sinkronkan Semua Perangkat
                             </button>
-                            <button type="button" onclick="pullFromSupabase()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow transition">
+                            <button type="button" onclick="pullFromSupabase()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-rotate-right"></i> Tarik Data Terbaru
                             </button>
                         </div>
@@ -1503,11 +1429,11 @@
                             Klik tombol di samping agar perubahan langsung tersimpan permanen di Supabase dan aktif di seluruh perangkat pelanggan.
                         </p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <button type="button" onclick="switchAdminTab('dashboard')" class="bg-[#111827] hover:bg-slate-800 text-white text-xs sm:text-sm font-extrabold px-5 py-3.5 rounded-2xl shadow-sm transition flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                        <button type="button" onclick="switchAdminTab('dashboard')" class="flex-1 sm:flex-initial bg-[#111827] hover:bg-slate-800 text-white text-xs sm:text-sm font-extrabold px-5 py-3.5 rounded-2xl shadow-sm transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-left text-amber-400"></i> Kembali ke Dashboard
                         </button>
-                        <button type="button" onclick="saveAndBroadcastAllSettings()" class="bg-[#047857] hover:bg-[#065f46] text-white text-xs sm:text-sm font-extrabold px-6 py-3.5 rounded-2xl shadow-md transition flex items-center gap-2">
+                        <button type="button" onclick="saveAndBroadcastAllSettings()" class="flex-1 sm:flex-initial bg-[#047857] hover:bg-[#065f46] text-white text-xs sm:text-sm font-extrabold px-6 py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-circle-check text-base"></i> Simpan Semua Pengaturan
                         </button>
                     </div>
@@ -1641,13 +1567,6 @@
                         <button type="button" onclick="orderProductViaWhatsApp()" class="bg-[#048454] hover:bg-[#036c45] text-white font-extrabold py-4 px-5 rounded-2xl shadow-md transition flex items-center justify-center gap-2.5 text-sm">
                             <i class="fa-brands fa-whatsapp text-lg"></i> Pesan via WhatsApp
                         </button>
-                    </div>
-
-                    <div id="detail-marketplace-box" class="bg-[#fafafa] border border-slate-200 rounded-2xl p-4 space-y-2.5">
-                        <p class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide flex items-center gap-1.5">
-                            <i class="fa-solid fa-bag-shopping text-amber-500"></i> Atau Beli Produk Ini via Marketplace Resmi Kami:
-                        </p>
-                        <div id="detail-marketplace-buttons" class="flex flex-wrap gap-2"></div>
                     </div>
                 </div>
 
@@ -1936,7 +1855,7 @@
         // ============================================================================
         const FRONTEND_SUPABASE_CONFIG = {
             url: "https://yobrveoosucbsionvoja.supabase.co",
-            anonKey: "sb_publishable_uxyw1hMO-ymmTQ7NeBv0BA_3IjmD1ib" // Otomatis terisi saat di-export melalui tombol Deploy Vercel
+            anonKey: "sb_publishable_uxyw1hMO-ymmTQ7NeBv0BA_3IjmD1ib"
         };
 
         const DEFAULT_SUPABASE_URL = FRONTEND_SUPABASE_CONFIG.url || "https://yobrveoosucbsionvoja.supabase.co";
@@ -1953,6 +1872,46 @@
             if (k.startsWith("sb_publishable_") && k.length >= 25) return true;
             if (k.startsWith("eyJ") && k.split(".").length === 3 && k.length >= 80) return true;
             return false;
+        }
+
+        // Ikon Brand Resmi: Squircle Gelap + Bingkai & Ikon Printer Emas
+        const SVG_PRINTER_BRAND_LOGO = "data:image/svg+xml," + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+                <defs>
+                    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fde047"/>
+                        <stop offset="55%" stop-color="#fbbf24"/>
+                        <stop offset="100%" stop-color="#f59e0b"/>
+                    </linearGradient>
+                </defs>
+                <rect x="6" y="6" width="108" height="108" rx="28" fill="#190e06" stroke="url(#g)" stroke-width="7"/>
+                <rect x="41" y="33" width="38" height="17" rx="5" fill="url(#g)"/>
+                <rect x="48" y="40" width="24" height="10" rx="2" fill="#190e06"/>
+                <rect x="30" y="48" width="60" height="24" rx="7" fill="url(#g)"/>
+                <circle cx="78" cy="58" r="3" fill="#190e06"/>
+                <rect x="41" y="68" width="38" height="19" rx="5" fill="url(#g)"/>
+                <rect x="48" y="69" width="24" height="11" rx="2" fill="#190e06"/>
+            </svg>`
+        );
+
+        function isLegacyPlaceholderLogo(url) {
+            const s = String(url || "").trim();
+            return !s || s.includes("placehold.co") || s.includes("text=A");
+        }
+
+        function resolveStoreLogoUrl(url) {
+            return isLegacyPlaceholderLogo(url) ? SVG_PRINTER_BRAND_LOGO : String(url).trim();
+        }
+
+        function resetDefaultPrinterLogo() {
+            storeSettings.logoUrl = SVG_PRINTER_BRAND_LOGO;
+            const logoUrlInp = document.getElementById("setting-logo-url");
+            if (logoUrlInp) logoUrlInp.value = "";
+            const fnameEl = document.getElementById("setting-logo-filename");
+            if (fnameEl) fnameEl.textContent = "Ikon Printer Emas";
+            applySettingsToDOM();
+            saveStateToStorage(true);
+            showToast("Ikon Printer Emas berhasil diterapkan sebagai logo toko!", "success");
         }
 
         function isCanvasSandboxEnvironment() {
@@ -2036,7 +1995,6 @@
                     { groupName: "MODEL TEPIAN", options: [{ name: "TEPIAN HITAM", price: 0 }, { name: "TANPA TEPIAN", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 5, discountPercent: 5 }, { minQty: 10, discountPercent: 7 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2066,7 +2024,6 @@
                     { groupName: "MODEL TEPIAN", options: [{ name: "TEPIAN HITAM", price: 0 }, { name: "TANPA TEPIAN", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 5, discountPercent: 5 }, { minQty: 10, discountPercent: 7 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2091,7 +2048,6 @@
                     { groupName: "WARNA TINTA", options: [{ name: "1 Warna Pilihan", price: 0 }, { name: "2 Warna Kombinasi", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 5, discountPercent: 10 }],
-                marketplaceLinks: {},
                 cardStyle: "dark_stamp"
             },
             {
@@ -2116,7 +2072,6 @@
                     { groupName: "TIPE", options: [{ name: "Original Super Kuat", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "slate_glue"
             },
             {
@@ -2141,7 +2096,6 @@
                     { groupName: "FINISHING", options: [{ name: "Lapis Resin Cembung", price: 0 }, { name: "Tanpa Resin (Datar)", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 15 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2166,7 +2120,6 @@
                     { groupName: "MODEL LIST", options: [{ name: "Tepian Putih", price: 0 }, { name: "Full Hitam", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2191,7 +2144,6 @@
                     { groupName: "MODEL WARNA", options: [{ name: "Tepian Putih", price: 0 }, { name: "Full Hitam", price: 0 }, { name: "Full Putih", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 100, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2216,7 +2168,6 @@
                     { groupName: "MODEL GOLD", options: [{ name: "Tepian Plat Gold", price: 0 }, { name: "Full Hitam List Gold", price: 0 }, { name: "Full Gold Plat", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2241,7 +2192,6 @@
                     { groupName: "MODEL JABATAN", options: [{ name: "Nama Saja (1 Baris)", price: 0 }, { name: "Nama + Jabatan", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 15 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2266,7 +2216,6 @@
                     { groupName: "LEBAR TALI", options: [{ name: "1.5 cm", price: 0 }, { name: "2 cm (Standar)", price: 0 }, { name: "2.5 cm", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 100, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2291,7 +2240,6 @@
                     { groupName: "FINISHING", options: [{ name: "Mata Ayam (Ring)", price: 0 }, { name: "Selongsong Bambu", price: 0 }, { name: "Potong Pas", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2316,7 +2264,6 @@
                     { groupName: "MODEL DUDUKAN", options: [{ name: "Dudukan Akrilik Hitam", price: 0 }, { name: "Dudukan Kayu Jati", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 20 }],
-                marketplaceLinks: {},
                 cardStyle: "standard"
             }
         ];
@@ -2351,20 +2298,6 @@
             };
         }
 
-        const INITIAL_MARKETPLACES = [
-            { id: "mp_shopee", platformKey: "shopee", label: "Shopee", url: "https://id.shp.ee/wC5bnNg7", categoryType: "marketplace", badgeText: "Official Store", colorHex: "#ee4d2d", iconClass: "fa-solid fa-bag-shopping", isActive: true },
-            { id: "mp_tokopedia", platformKey: "tokopedia", label: "Tokopedia", url: "https://tk.tokopedia.com/Zsg7Fc3tN/", categoryType: "marketplace", badgeText: "Power Merchant", colorHex: "#03ac0e", iconClass: "fa-solid fa-store", isActive: true },
-            { id: "mp_tiktok_shop", platformKey: "tiktok_shop", label: "TikTok Shop", url: "https://vt.tiktok.com/ZSg7YAwOL/?page", categoryType: "marketplace", badgeText: "Promo Live", colorHex: "#111827", iconClass: "fa-brands fa-tiktok", isActive: true },
-            { id: "mp_lazada", platformKey: "lazada", label: "Lazada", url: "https://www.lazada.co.id/", categoryType: "marketplace", badgeText: "LazMall / Store", colorHex: "#0f146d", iconClass: "fa-solid fa-cart-shopping", isActive: true },
-            { id: "mp_blibli", platformKey: "blibli", label: "Blibli", url: "https://www.blibli.com/", categoryType: "marketplace", badgeText: "Official", colorHex: "#0095da", iconClass: "fa-solid fa-shop", isActive: true },
-            { id: "mp_toco", platformKey: "toco", label: "Toco", url: "https://toco.id/", categoryType: "marketplace", badgeText: "Toko Resmi", colorHex: "#d97706", iconClass: "fa-solid fa-tag", isActive: true },
-            { id: "mp_lynk", platformKey: "lynk", label: "Lynk.id", url: "https://lynk.id/", categoryType: "marketplace", badgeText: "Produk Digital", colorHex: "#059669", iconClass: "fa-solid fa-link", isActive: true },
-            { id: "soc_instagram", platformKey: "instagram", label: "Instagram Feed", url: "https://www.instagram.com/anugerahart", categoryType: "social", badgeText: "@anugerahart", colorHex: "#e1306c", iconClass: "fa-brands fa-instagram", isActive: true },
-            { id: "soc_facebook", platformKey: "facebook", label: "Facebook Page", url: "https://www.facebook.com/share/19EyX", categoryType: "social", badgeText: "Official Page", colorHex: "#1877f2", iconClass: "fa-brands fa-facebook", isActive: true },
-            { id: "soc_tiktok", platformKey: "tiktok", label: "TikTok Official", url: "https://www.tiktok.com/@anugerah_art?", categoryType: "social", badgeText: "@anugerah_art", colorHex: "#0f172a", iconClass: "fa-brands fa-tiktok", isActive: true },
-            { id: "soc_youtube", platformKey: "youtube", label: "YouTube Channel", url: "https://youtube.com/@anugerah_art?si=", categoryType: "social", badgeText: "@anugerah_art", colorHex: "#dc2626", iconClass: "fa-brands fa-youtube", isActive: true }
-        ];
-
         // --- APPLICATION STATE ---
         let products = [];
         let cart = [];
@@ -2377,7 +2310,7 @@
             backButtonLabel: "Kembali",
             backButtonUrl: "",
             digitalLink: "https://lynk.id/",
-            logoUrl: "https://placehold.co/120x120/000000/f59e0b?text=A",
+            logoUrl: SVG_PRINTER_BRAND_LOGO,
             bannerUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&q=80",
             heroBadgeIcon: "fa-wand-magic-sparkles",
             heroBadge: "OFFICIAL KATALOG & PRODUKSI LANGSUNG",
@@ -2411,7 +2344,6 @@
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             supabaseUrl: DEFAULT_SUPABASE_URL,
             supabaseAnonKey: DEFAULT_SUPABASE_ANON_KEY,
-            marketplaces: JSON.parse(JSON.stringify(INITIAL_MARKETPLACES)),
             deletedProductIds: [],
             lastUpdatedAt: 0,
             catalogSignature: ""
@@ -2899,11 +2831,8 @@
                 const pSig = (Array.isArray(prodList) ? prodList : []).map(p =>
                     `${p.id}|${p.name}|${p.basePrice}|${p.discountPercent}|${(p.photos && p.photos[0]) ? p.photos[0].slice(0, 80) : ""}|${(p.variations || []).length}`
                 ).join(";");
-                const mpSig = (Array.isArray(settingsObj?.marketplaces) ? settingsObj.marketplaces : []).map(m =>
-                    `${m.id}|${m.label}|${m.url}|${m.isActive}`
-                ).join(";");
                 const sSig = `${settingsObj?.storeName || ""}|${settingsObj?.heroTitle || ""}|${settingsObj?.backButtonUrl || ""}|${settingsObj?.darkMode}|${settingsObj?.batikMotif || ""}`;
-                return `${pSig}#${mpSig}#${sSig}`;
+                return `${pSig}#${sSig}`;
             } catch (e) {
                 return String(Date.now());
             }
@@ -3103,7 +3032,7 @@
                 storeSettings.supabaseAnonKey = activeCreds.anonKey;
             }
             storeSettings.lastUpdatedAt = sanitizeTimestampNow(storeSettings.lastUpdatedAt);
-            ensureMarketplacesInitialized();
+            storeSettings.logoUrl = resolveStoreLogoUrl(storeSettings.logoUrl);
 
             let baseProducts = null;
             isUsingDefaultSeedCatalog = false;
@@ -3259,7 +3188,6 @@
                 variations: Array.isArray(r.variations) ? r.variations : [],
                 wholesaleTiers: Array.isArray(r.wholesale_tiers ?? r.wholesaleTiers) ? (r.wholesale_tiers ?? r.wholesaleTiers) : [],
                 photos: Array.isArray(r.photos) && r.photos.length > 0 ? r.photos : [SVG_NAMETAG_SILVER_PLAT],
-                marketplaceLinks: (r.marketplace_links ?? r.marketplaceLinks) || {},
                 videoUrl: r.video_url || r.videoUrl || "",
                 cardStyle: r.card_style || r.cardStyle || "standard"
             };
@@ -3271,14 +3199,12 @@
             try {
                 const cleanSettings = { ...storeSettings };
                 delete cleanSettings.supabaseAnonKey;
-                const cleanMarketplaces = ensureMarketplacesInitialized();
 
                 let pushedOk = false;
                 const { data: rpcRes, error: rpcErr } = await supabaseClient.rpc("sync_anugerah_store_atomic", {
                     p_products: products,
                     p_settings: cleanSettings,
-                    p_allow_empty: products.length === 0,
-                    p_marketplaces: cleanMarketplaces
+                    p_allow_empty: products.length === 0
                 });
 
                 if (!rpcErr) {
@@ -3292,7 +3218,6 @@
                         .upsert({
                             id: "main_store_data",
                             products,
-                            marketplaces: cleanMarketplaces,
                             store_settings: cleanSettings,
                             updated_at: new Date().toISOString()
                         }, { onConflict: "id" });
@@ -3340,12 +3265,12 @@
                     storeSettings = {
                         ...storeSettings,
                         ...decodedRemote,
+                        logoUrl: resolveStoreLogoUrl(decodedRemote.logoUrl || storeSettings.logoUrl),
                         supabaseUrl: activeCreds.url,
                         supabaseAnonKey: activeCreds.anonKey,
                         backButtonUrl: decodedRemote.backButtonUrl !== undefined ? nextBackUrl : prevBackUrl
                     };
                 }
-                ensureMarketplacesInitialized();
                 saveStateToStorage(false);
                 applySettingsToDOM();
                 renderAllViews();
@@ -3377,7 +3302,7 @@
 
                 const { data: storeRow, error: storeErr } = await supabaseClient
                     .from("anugerah_cloud_store")
-                    .select("products, marketplaces, store_settings, updated_at")
+                    .select("products, store_settings, updated_at")
                     .eq("id", "main_store_data")
                     .maybeSingle();
 
@@ -3388,14 +3313,10 @@
 
                 let remoteCloudProducts = (storeRow && Array.isArray(storeRow.products)) ? storeRow.products : [];
                 let remoteSettings = (storeRow && storeRow.store_settings && typeof storeRow.store_settings === "object") ? { ...storeRow.store_settings } : {};
-                if (storeRow && Array.isArray(storeRow.marketplaces) && storeRow.marketplaces.length > 0) {
-                    remoteSettings.marketplaces = storeRow.marketplaces;
-                }
                 if (storeRow && storeRow.updated_at) {
                     lastKnownRemoteUpdatedAt = storeRow.updated_at;
                 }
 
-                let relationalBackUrl = "";
                 if (!remoteCloudProducts || remoteCloudProducts.length === 0) {
                     const { data: relProds } = await supabaseClient.from("products").select("*");
                     if (Array.isArray(relProds) && relProds.length > 0) {
@@ -3415,11 +3336,12 @@
                     const synchronizedProducts = applyPendingMutationsOntoList(remoteCloudProducts.map(normalizeSupabaseProductRow).filter(Boolean));
 
                     const existingBackUrl = normalizeBackUrl(localStorage.getItem("anugerah_back_url_v3") || storeSettings.backButtonUrl);
-                    const remoteBackUrl = normalizeBackUrl(remoteSettings.backButtonUrl) || relationalBackUrl;
+                    const remoteBackUrl = normalizeBackUrl(remoteSettings.backButtonUrl);
                     const activeCreds = resolveActiveSupabaseCredentials();
                     const mergedSettings = {
                         ...storeSettings,
                         ...remoteSettings,
+                        logoUrl: resolveStoreLogoUrl(remoteSettings.logoUrl || storeSettings.logoUrl),
                         supabaseUrl: activeCreds.url,
                         supabaseAnonKey: activeCreds.anonKey,
                         backButtonUrl: remoteBackUrl || existingBackUrl
@@ -3539,31 +3461,8 @@
                         variations,
                         wholesaleTiers,
                         photos: Array.isArray(imgs) && imgs.length > 0 ? imgs : [SVG_NAMETAG_SILVER_PLAT],
-                        marketplaceLinks: {},
                         videoUrl: item.videoUrl || "",
                         cardStyle: item.id === "p1" ? "dark_stamp" : (item.id === "p_foto_1" ? "slate_glue" : "standard")
-                    };
-                });
-
-                const mappedMarketplaces = INITIAL_MARKETPLACES.map(mp => {
-                    const keyMap = {
-                        shopee: ["shopee_url", "shopee_label"],
-                        tokopedia: ["tokopedia_url", "tokopedia_label"],
-                        tiktok_shop: ["tiktok_shop_url", "tiktok_shop_label"],
-                        lazada: ["lazada_url", "lazada_label"],
-                        blibli: ["blibli_url", "blibli_label"],
-                        toco: ["toco_url", "toco_label"],
-                        lynk: ["lynk_url", "lynk_label"],
-                        instagram: ["ig_url", "ig_label"],
-                        facebook: ["fb_url", "fb_label"],
-                        tiktok: ["tiktok_url", "tiktok_label"],
-                        youtube: ["yt_url", "yt_label"]
-                    };
-                    const pair = keyMap[mp.platformKey];
-                    return {
-                        ...mp,
-                        url: (pair && kv[pair[0]]) ? kv[pair[0]] : mp.url,
-                        label: (pair && kv[pair[1]]) ? kv[pair[1]] : mp.label
                     };
                 });
 
@@ -3575,8 +3474,7 @@
                         waNumber: kv.wa_number || storeSettings.waNumber,
                         storeAddress: kv.workshop_address || storeSettings.storeAddress,
                         darkMode: String(kv.dark_mode) === "true",
-                        digitalLink: kv.lynk_url || storeSettings.digitalLink,
-                        marketplaces: mappedMarketplaces
+                        digitalLink: kv.lynk_url || storeSettings.digitalLink
                     }
                 };
             }
@@ -3733,11 +3631,6 @@
                         { event: "*", schema: "public", table: "store_settings" },
                         () => scheduleRealtimeRefresh()
                     )
-                    .on(
-                        "postgres_changes",
-                        { event: "*", schema: "public", table: "marketplaces" },
-                        () => scheduleRealtimeRefresh()
-                    )
                     .subscribe((status) => {
                         if (status === "SUBSCRIBED" && topCloudBadge) {
                             topCloudBadge.textContent = "Supabase Realtime Aktif";
@@ -3813,10 +3706,8 @@
         function renderAllViews() {
             renderPublicCategoryPills();
             renderPublicCatalog(true);
-            renderPublicMarketplaces();
             renderDashboardView();
             renderAdminProductList(true);
-            renderAdminMarketplacesUI();
         }
 
         function verifyAdminPinSubmit() {
@@ -3904,9 +3795,9 @@
             if (mode === "public") {
                 publicView.classList.remove("hide");
                 adminView.classList.add("hide");
-                btnPublic.className = "px-3.5 py-1.5 rounded-lg text-xs font-extrabold theme-bg text-white transition flex items-center gap-1.5";
+                btnPublic.className = "h-7 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs font-extrabold theme-bg text-white transition flex items-center justify-center gap-1 whitespace-nowrap";
                 if (btnAdmin) {
-                    btnAdmin.className = `${isAdminUnlocked ? '' : 'hide '}px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-1.5`;
+                    btnAdmin.className = `${isAdminUnlocked ? '' : 'hide '}h-7 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1 whitespace-nowrap`;
                 }
                 renderPublicCatalog();
             } else {
@@ -3914,9 +3805,9 @@
                 adminView.classList.remove("hide");
                 if (btnAdmin) {
                     btnAdmin.classList.remove("hide");
-                    btnAdmin.className = "px-3.5 py-1.5 rounded-lg text-xs font-extrabold theme-bg text-white transition flex items-center gap-1.5";
+                    btnAdmin.className = "h-7 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs font-extrabold theme-bg text-white transition flex items-center justify-center gap-1 whitespace-nowrap";
                 }
-                btnPublic.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-1.5";
+                btnPublic.className = "h-7 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1 whitespace-nowrap";
 
                 const activeViews = Array.from(document.querySelectorAll(".admin-view")).filter(v => !v.classList.contains("hide"));
                 if (activeViews.length === 0) {
@@ -3932,9 +3823,9 @@
             });
             document.querySelectorAll(".admin-mobile-tab").forEach(btn => {
                 if (btn.dataset.tab === tabId) {
-                    btn.className = "admin-mobile-tab px-3 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap theme-bg text-white shadow-sm";
+                    btn.className = "admin-mobile-tab px-2 py-2 rounded-xl text-[11px] font-extrabold theme-bg text-white shadow-sm flex items-center justify-center gap-1 truncate";
                 } else {
-                    btn.className = "admin-mobile-tab px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-700";
+                    btn.className = "admin-mobile-tab px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 flex items-center justify-center gap-1 truncate";
                 }
             });
 
@@ -4186,7 +4077,6 @@
                 </span>
             `).join("");
 
-            renderDetailMarketplaceButtons(p);
             recalculateDetailModalPrice();
             document.getElementById("modal-product-detail").classList.remove("hide");
         }
@@ -4522,12 +4412,23 @@
                 } catch (e) {}
             }
             if (!logoDrawn) {
-                doc.setTextColor(245, 158, 11);
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text("A", margin + 8, 14.5, { align: "center" });
-                doc.setFontSize(3.8);
-                doc.text("ANUGERAH", margin + 8, 18.2, { align: "center" });
+                // Gambar Ikon Printer Emas di Nota PDF A6
+                doc.setFillColor(25, 14, 6);
+                doc.setDrawColor(245, 158, 11);
+                doc.setLineWidth(0.7);
+                doc.roundedRect(margin, 4.5, 16, 16, 3.2, 3.2, "FD");
+                doc.setFillColor(251, 191, 36);
+                doc.roundedRect(margin + 5.2, 8.2, 5.6, 2.5, 0.7, 0.7, "F");
+                doc.setFillColor(25, 14, 6);
+                doc.rect(margin + 6.2, 9.1, 3.6, 1.5, "F");
+                doc.setFillColor(251, 191, 36);
+                doc.roundedRect(margin + 3.6, 10.4, 8.8, 3.6, 1, 1, "F");
+                doc.setFillColor(25, 14, 6);
+                doc.circle(margin + 10.8, 11.9, 0.45, "F");
+                doc.setFillColor(251, 191, 36);
+                doc.roundedRect(margin + 5.2, 13.4, 5.6, 2.8, 0.7, 0.7, "F");
+                doc.setFillColor(25, 14, 6);
+                doc.rect(margin + 6.2, 13.6, 3.6, 1.6, "F");
             }
 
             doc.setTextColor(245, 158, 11);
@@ -4730,21 +4631,21 @@
                         </div>
 
                         <div>
-                            <div class="flex items-baseline justify-between gap-1 mb-2">
+                            <div class="flex flex-wrap items-baseline justify-between gap-x-1 gap-y-0.5 mb-2">
                                 <div class="min-w-0">
                                     ${disc > 0 ? `<p class="text-[9px] sm:text-[10px] text-slate-400 line-through leading-none mb-0.5">${formatRupiah(originalPrice)}</p>` : ""}
-                                    <p class="text-sm sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
+                                    <p class="text-xs sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
                                 </div>
                                 <span class="text-[9px] sm:text-[11px] text-slate-500 font-bold whitespace-nowrap">${sanitizeText(soldText)}</span>
                             </div>
 
-                            <div class="card-meta-footer pt-2 flex items-center justify-between gap-1">
-                                <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 truncate">
-                                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5"><i class="fa-solid fa-truck-fast"></i> ${processLabel}</span>
-                                    <span class="text-slate-300 dark:text-slate-600">|</span>
-                                    <span class="truncate uppercase"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
+                            <div class="card-meta-footer pt-2 flex items-center justify-between gap-1.5">
+                                <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 min-w-0 flex-1 overflow-hidden">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5 flex-shrink-0"><i class="fa-solid fa-truck-fast"></i> ${processLabel}</span>
+                                    <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
+                                    <span class="truncate uppercase hidden sm:inline"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
                                 </div>
-                                <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0">
+                                <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0 whitespace-nowrap">
                                     Beli
                                 </button>
                             </div>
@@ -4781,17 +4682,17 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex items-baseline justify-between gap-1 mb-2">
-                                <p class="text-sm sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
+                            <div class="flex flex-wrap items-baseline justify-between gap-x-1 gap-y-0.5 mb-2">
+                                <p class="text-xs sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
                                 <span class="text-[9px] sm:text-[11px] text-slate-500 font-bold whitespace-nowrap">${sanitizeText(soldText)}</span>
                             </div>
-                            <div class="card-meta-footer pt-2 flex items-center justify-between gap-1">
-                                <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 truncate">
-                                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5"><i class="fa-solid fa-truck-fast"></i> Ready</span>
-                                    <span class="text-slate-300 dark:text-slate-600">|</span>
-                                    <span class="truncate uppercase"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
+                            <div class="card-meta-footer pt-2 flex items-center justify-between gap-1.5">
+                                <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 min-w-0 flex-1 overflow-hidden">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5 flex-shrink-0"><i class="fa-solid fa-truck-fast"></i> Ready</span>
+                                    <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
+                                    <span class="truncate uppercase hidden sm:inline"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
                                 </div>
-                                <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0">
+                                <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0 whitespace-nowrap">
                                     Beli
                                 </button>
                             </div>
@@ -4833,21 +4734,21 @@
                     </div>
                     
                     <div>
-                        <div class="flex items-baseline justify-between gap-1 mb-2">
+                        <div class="flex flex-wrap items-baseline justify-between gap-x-1 gap-y-0.5 mb-2">
                             <div class="min-w-0">
                                 ${disc > 0 ? `<p class="text-[9px] sm:text-[10px] text-slate-400 line-through leading-none mb-0.5">${formatRupiah(originalPrice || 25510)}</p>` : ""}
-                                <p class="text-sm sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
+                                <p class="text-xs sm:text-lg font-black price-text-lux tracking-tight leading-none truncate">${formatRupiah(price)}</p>
                             </div>
                             <span class="text-[9px] sm:text-[11px] text-slate-500 font-bold whitespace-nowrap">${sanitizeText(soldText)}</span>
                         </div>
                         
-                        <div class="card-meta-footer pt-2 flex items-center justify-between gap-1">
-                            <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 truncate">
-                                <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5"><i class="fa-solid fa-truck-fast"></i> ${processLabel}</span>
-                                <span class="text-slate-300 dark:text-slate-600">|</span>
-                                <span class="truncate uppercase"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
+                        <div class="card-meta-footer pt-2 flex items-center justify-between gap-1.5">
+                            <div class="text-[8px] sm:text-[10px] font-bold flex items-center gap-1 min-w-0 flex-1 overflow-hidden">
+                                <span class="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-0.5 flex-shrink-0"><i class="fa-solid fa-truck-fast"></i> ${processLabel}</span>
+                                <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
+                                <span class="truncate uppercase hidden sm:inline"><i class="fa-solid fa-location-dot text-amber-500 mr-0.5"></i>${sanitizeText(storeSettings.location)}</span>
                             </div>
-                            <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0">
+                            <button onclick="openProductDetailModal('${p.id}')" class="btn-buy-lux font-extrabold py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex-shrink-0 whitespace-nowrap">
                                 Beli
                             </button>
                         </div>
@@ -5063,7 +4964,7 @@
             } else {
                 if (varBox) varBox.classList.add("hide");
                 if (basePriceWrapper) basePriceWrapper.classList.remove("hide");
-                if (statsRow) statsRow.className = "grid grid-cols-2 md:grid-cols-4 gap-4";
+                if (statsRow) statsRow.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4";
             }
         }
 
@@ -5072,25 +4973,29 @@
             if (!container) return;
 
             container.innerHTML = formVariations.map((grp, gIdx) => `
-                <div class="border border-[#f5d076] bg-[#fffdf7] rounded-2xl p-4 space-y-3">
-                    <div class="flex flex-wrap items-center gap-2.5">
-                        <span class="bg-[#ea930c] text-white text-[10px] font-extrabold px-3 py-1.5 rounded-lg uppercase tracking-wide">
-                            GRUP VARIASI
-                        </span>
-                        <input type="text" value="${(grp.groupName || '').replace(/"/g, '&quot;')}" oninput="updateVariationGroupName(${gIdx}, this.value)" placeholder="Contoh: UKURAN / PENGAIT" class="flex-1 min-w-[180px] border border-[#f5c85b] bg-white rounded-xl px-3.5 py-2 text-xs font-extrabold text-slate-900 uppercase outline-none focus:border-amber-600">
-                        <button type="button" onclick="addVariationOption(${gIdx})" class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs font-extrabold px-3.5 py-2 rounded-xl transition">
-                            + Tambah Opsi
-                        </button>
-                        <button type="button" onclick="removeVariationGroup(${gIdx})" class="bg-[#fee2e2] hover:bg-red-200 text-red-600 text-xs font-extrabold px-3.5 py-2 rounded-xl transition">
-                            Hapus Grup
-                        </button>
+                <div class="border border-[#f5d076] bg-[#fffdf7] rounded-2xl p-3.5 sm:p-4 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                            <span class="bg-[#ea930c] text-white text-[10px] font-extrabold px-2.5 py-1.5 rounded-lg uppercase tracking-wide flex-shrink-0">
+                                GRUP ${gIdx + 1}
+                            </span>
+                            <input type="text" value="${(grp.groupName || '').replace(/"/g, '&quot;')}" oninput="updateVariationGroupName(${gIdx}, this.value)" placeholder="Contoh: UKURAN / PENGAIT" class="flex-1 min-w-0 border border-[#f5c85b] bg-white rounded-xl px-3 py-2 text-xs font-extrabold text-slate-900 uppercase outline-none focus:border-amber-600">
+                        </div>
+                        <div class="grid grid-cols-2 sm:flex items-center gap-2 flex-shrink-0">
+                            <button type="button" onclick="addVariationOption(${gIdx})" class="bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 text-xs font-extrabold px-3 py-2 rounded-xl transition text-center whitespace-nowrap">
+                                + Tambah Opsi
+                            </button>
+                            <button type="button" onclick="removeVariationGroup(${gIdx})" class="bg-[#fee2e2] hover:bg-red-200 text-red-600 text-xs font-extrabold px-3 py-2 rounded-xl transition text-center whitespace-nowrap">
+                                Hapus Grup
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         ${(grp.options || []).map((opt, oIdx) => `
-                            <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2">
+                            <div class="flex items-center gap-1.5 sm:gap-2 bg-white border border-slate-200 rounded-xl p-2 min-w-0">
                                 <input type="text" value="${(opt.name || '').replace(/"/g, '&quot;')}" oninput="updateVariationOption(${gIdx}, ${oIdx}, 'name', this.value)" placeholder="Nama Opsi" class="flex-1 min-w-0 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-800 outline-none focus:border-amber-500">
-                                <input type="number" value="${Number(opt.price) || 0}" oninput="updateVariationOption(${gIdx}, ${oIdx}, 'price', this.value)" placeholder="Harga (Rp)" class="w-28 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-extrabold text-emerald-700 outline-none focus:border-amber-500">
-                                <button type="button" onclick="removeVariationOption(${gIdx}, ${oIdx})" class="text-red-500 hover:text-red-700 text-xs font-extrabold px-2 py-1">✕</button>
+                                <input type="number" value="${Number(opt.price) || 0}" oninput="updateVariationOption(${gIdx}, ${oIdx}, 'price', this.value)" placeholder="Harga" class="w-24 sm:w-28 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-extrabold text-emerald-700 outline-none focus:border-amber-500 flex-shrink-0">
+                                <button type="button" onclick="removeVariationOption(${gIdx}, ${oIdx})" class="text-red-500 hover:text-red-700 text-xs font-extrabold px-1.5 py-1 flex-shrink-0">✕</button>
                             </div>
                         `).join("")}
                     </div>
@@ -5203,10 +5108,6 @@
 
             document.getElementById("prod-video-url").value = "";
             document.getElementById("prod-video-filename").textContent = "No file chosen";
-            ["prod-mp-shopee", "prod-mp-tokopedia", "prod-mp-tiktok", "prod-mp-lazada"].forEach(mpId => {
-                const el = document.getElementById(mpId);
-                if (el) el.value = "";
-            });
 
             document.getElementById("form-mode-badge").textContent = "MODE: TAMBAH PRODUK BARU (UNLIMITED PRODUK)";
             document.getElementById("btn-cancel-edit").classList.add("hide");
@@ -5249,12 +5150,6 @@
             const isPreorder = document.getElementById("prod-is-preorder").checked;
             const poDays = isPreorder ? (Number(document.getElementById("prod-po-days").value) || 3) : 0;
             const videoUrl = document.getElementById("prod-video-url").value.trim();
-            const marketplaceLinks = {
-                shopee: (document.getElementById("prod-mp-shopee")?.value || "").trim(),
-                tokopedia: (document.getElementById("prod-mp-tokopedia")?.value || "").trim(),
-                tiktok_shop: (document.getElementById("prod-mp-tiktok")?.value || "").trim(),
-                lazada: (document.getElementById("prod-mp-lazada")?.value || "").trim()
-            };
 
             if (!name) {
                 showToast("Nama Produk wajib diisi!", "error");
@@ -5302,7 +5197,6 @@
                         variations: hasVariations ? JSON.parse(JSON.stringify(formVariations)) : [],
                         wholesaleTiers: JSON.parse(JSON.stringify(formWholesaleTiers)),
                         photos: photosToSave,
-                        marketplaceLinks,
                         videoUrl,
                         updatedAt: nowTs,
                         localSaved: true
@@ -5328,7 +5222,6 @@
                     variations: hasVariations ? JSON.parse(JSON.stringify(formVariations)) : [],
                     wholesaleTiers: JSON.parse(JSON.stringify(formWholesaleTiers)),
                     photos: photosToSave,
-                    marketplaceLinks,
                     videoUrl,
                     cardStyle: "standard",
                     updatedAt: nowTs,
@@ -5344,7 +5237,7 @@
             if (syncedOk && supabaseClient) {
                 showToast(`✅ Produk "${name}" berhasil disimpan permanen ke Supabase & disinkronkan ke semua perangkat!`, "success");
             } else {
-                showToast(`💾 Produk "${name}" tersimpan di lokal! Isi anonKey Supabase untuk sinkron lintas perangkat.`, "info");
+                showToast(`💾 Produk "${name}" tersimpan di lokal!`, "info");
             }
         }
 
@@ -5380,14 +5273,13 @@
 
             formPhotoSlots = Array(15).fill("");
             formPhotoFilenames = Array(15).fill("Belum dipilih");
+            (Array.isArray(p.photos) ? p.photos : []).slice(0, 15).forEach((u, i) => {
+                formPhotoSlots[i] = u || "";
+                formPhotoFilenames[i] = u ? `Foto_${i + 1}` : "Belum dipilih";
+            });
             render15PhotoSlotsUI();
 
             document.getElementById("prod-video-url").value = p.videoUrl || "";
-            const mpLinks = (p.marketplaceLinks && typeof p.marketplaceLinks === "object") ? p.marketplaceLinks : {};
-            if (document.getElementById("prod-mp-shopee")) document.getElementById("prod-mp-shopee").value = mpLinks.shopee || "";
-            if (document.getElementById("prod-mp-tokopedia")) document.getElementById("prod-mp-tokopedia").value = mpLinks.tokopedia || "";
-            if (document.getElementById("prod-mp-tiktok")) document.getElementById("prod-mp-tiktok").value = mpLinks.tiktok_shop || "";
-            if (document.getElementById("prod-mp-lazada")) document.getElementById("prod-mp-lazada").value = mpLinks.lazada || "";
 
             document.getElementById("form-mode-badge").textContent = `MODE: EDIT PRODUK (${p.name.toUpperCase()})`;
             document.getElementById("btn-cancel-edit").classList.remove("hide");
@@ -5465,28 +5357,32 @@
                 const thumbImg = (p.photos && p.photos[0]) ? p.photos[0] : SVG_NAMETAG_SILVER_PLAT;
 
                 return `
-                    <div class="bg-white border border-slate-200 rounded-2xl px-4 py-3.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 hover:border-amber-300 transition shadow-sm">
-                        <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3.5 sm:px-4 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-amber-300 transition shadow-sm">
+                        <div class="flex items-center gap-3 min-w-0 w-full sm:flex-1">
                             <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleBulkSelectProduct('${p.id}', this.checked)" class="w-4 h-4 rounded accent-amber-500 cursor-pointer flex-shrink-0">
-                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-900 flex-shrink-0">
-                                <img src="${thumbImg}" loading="lazy" decoding="async" alt="${sanitizeText(p.name)}" class="w-full h-full object-cover">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-slate-200 bg-slate-900 flex-shrink-0">
+                                <img src="${thumbImg}" loading="lazy" decoding="async" alt="${sanitizeText(p.name)}" onerror="this.src='${SVG_NAMETAG_SILVER_PLAT}'" class="w-full h-full object-cover">
                             </div>
                             <div class="min-w-0 flex-1">
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${sanitizeText(p.name)}</h4>
-                                <p class="text-[11px] font-bold text-[#b45309] mt-0.5">
-                                    ${formatRupiahWithSpace(p.basePrice)} • ${photoCount} Foto • ${varGroupCount} Grup Variasi
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug line-clamp-2 sm:truncate">${sanitizeText(p.name)}</h4>
+                                <p class="text-[11px] font-bold text-[#b45309] mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                                    <span>${formatRupiahWithSpace(p.basePrice)}</span>
+                                    <span class="opacity-60">•</span>
+                                    <span>${photoCount} Foto</span>
+                                    <span class="opacity-60">•</span>
+                                    <span>${varGroupCount} Grup Variasi</span>
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 ml-auto">
-                            <button type="button" onclick="editProduct('${p.id}')" class="bg-[#ea930c] hover:bg-[#d97706] text-white text-xs font-extrabold px-4 py-2 rounded-full shadow-sm transition">
+                        <div class="grid grid-cols-3 sm:flex items-center gap-2 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 flex-shrink-0">
+                            <button type="button" onclick="editProduct('${p.id}')" class="bg-[#ea930c] hover:bg-[#d97706] text-white text-xs font-extrabold py-2 px-3 sm:px-4 rounded-full shadow-sm transition text-center whitespace-nowrap">
                                 Edit
                             </button>
-                            <button type="button" onclick="duplicateProduct('${p.id}')" class="bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-extrabold px-4 py-2 rounded-full shadow-sm transition">
+                            <button type="button" onclick="duplicateProduct('${p.id}')" class="bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-extrabold py-2 px-3 sm:px-4 rounded-full shadow-sm transition text-center whitespace-nowrap">
                                 Duplikat
                             </button>
-                            <button type="button" onclick="deleteProductConfirm('${p.id}')" class="bg-[#ef4444] hover:bg-red-600 text-white text-xs font-extrabold px-4 py-2 rounded-full shadow-sm transition">
+                            <button type="button" onclick="deleteProductConfirm('${p.id}')" class="bg-[#ef4444] hover:bg-red-600 text-white text-xs font-extrabold py-2 px-3 sm:px-4 rounded-full shadow-sm transition text-center whitespace-nowrap">
                                 Hapus
                             </button>
                         </div>
@@ -5525,9 +5421,9 @@
             Object.entries(filterButtons).forEach(([key, btn]) => {
                 if (!btn) return;
                 if (key === adminActiveFilter) {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-slate-900 text-white transition shadow-sm";
+                    btn.className = "px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-slate-900 text-white transition shadow-sm";
                 } else {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-amber-300 text-slate-800 hover:bg-amber-50 transition";
+                    btn.className = "px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-extrabold bg-white border border-amber-300 text-slate-800 hover:bg-amber-50 transition";
                 }
             });
 
@@ -5749,7 +5645,7 @@
         }
 
         // ==========================================================
-        // ADMIN VIEW 3: PENGATURAN TOKO, TEMA & MARKETPLACE
+        // ADMIN VIEW 3: PENGATURAN TOKO & TEMA
         // ==========================================================
         function handleLogoTap() {
             logoTapCount++;
@@ -5903,176 +5799,6 @@
             saveStateToStorage();
         }
 
-        // ==========================================================
-        // MANAJEMEN DATA MARKETPLACE RESMI & SOSIAL MEDIA (SUPABASE)
-        // ==========================================================
-        function ensureMarketplacesInitialized() {
-            if (!Array.isArray(storeSettings.marketplaces) || storeSettings.marketplaces.length === 0) {
-                storeSettings.marketplaces = JSON.parse(JSON.stringify(INITIAL_MARKETPLACES));
-            }
-            return storeSettings.marketplaces;
-        }
-
-        function renderPublicMarketplaces() {
-            const mpGrid = document.getElementById("public-marketplaces-grid");
-            const socGrid = document.getElementById("public-socials-grid");
-            const socWrap = document.getElementById("public-socials-wrap");
-            const sectionEl = document.getElementById("public-marketplace-section");
-            if (!mpGrid || !socGrid) return;
-
-            const list = ensureMarketplacesInitialized();
-            const activeMarketplaces = list.filter(m => m && m.isActive !== false && m.categoryType !== "social" && (m.url || "").trim() !== "");
-            const activeSocials = list.filter(m => m && m.isActive !== false && m.categoryType === "social" && (m.url || "").trim() !== "");
-
-            if (sectionEl) {
-                sectionEl.classList.toggle("hide", activeMarketplaces.length === 0 && activeSocials.length === 0);
-            }
-
-            mpGrid.innerHTML = activeMarketplaces.map(m => {
-                const safeUrl = normalizeBackUrl(m.url);
-                const bgHex = m.colorHex || "#f59e0b";
-                return `
-                    <a href="${sanitizeText(safeUrl)}" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-amber-400 hover:shadow-md transition">
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm shadow-sm flex-shrink-0 group-hover:scale-105 transition" style="background-color: ${sanitizeText(bgHex)};">
-                            <i class="${sanitizeText(m.iconClass || 'fa-solid fa-store')}"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="font-extrabold text-xs text-slate-900 truncate">${sanitizeText(m.label)}</p>
-                            <p class="text-[10px] font-bold text-slate-500 truncate">${sanitizeText(m.badgeText || 'Official Store')}</p>
-                        </div>
-                    </a>
-                `;
-            }).join("");
-
-            if (socWrap) {
-                socWrap.classList.toggle("hide", activeSocials.length === 0);
-            }
-            socGrid.innerHTML = activeSocials.map(s => {
-                const safeUrl = normalizeBackUrl(s.url);
-                const bgHex = s.colorHex || "#0f172a";
-                return `
-                    <a href="${sanitizeText(safeUrl)}" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 p-2.5 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-emerald-400 hover:shadow-sm transition">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs shadow-sm flex-shrink-0" style="background-color: ${sanitizeText(bgHex)};">
-                            <i class="${sanitizeText(s.iconClass || 'fa-solid fa-share-nodes')}"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="font-extrabold text-xs text-slate-900 truncate">${sanitizeText(s.label)}</p>
-                            <p class="text-[10px] font-semibold text-slate-500 truncate">${sanitizeText(s.badgeText || 'Official')}</p>
-                        </div>
-                    </a>
-                `;
-            }).join("");
-        }
-
-        function renderDetailMarketplaceButtons(product) {
-            const box = document.getElementById("detail-marketplace-box");
-            const container = document.getElementById("detail-marketplace-buttons");
-            if (!box || !container) return;
-
-            const list = ensureMarketplacesInitialized();
-            const prodLinks = (product && product.marketplaceLinks && typeof product.marketplaceLinks === "object") ? product.marketplaceLinks : {};
-            const activeStoreMps = list.filter(m => m && m.isActive !== false && m.categoryType !== "social");
-
-            const buttonsHtml = activeStoreMps.map(m => {
-                const specificUrl = prodLinks[m.platformKey] ? normalizeBackUrl(prodLinks[m.platformKey]) : "";
-                const targetUrl = specificUrl || normalizeBackUrl(m.url);
-                if (!targetUrl) return "";
-                const bgHex = m.colorHex || "#f59e0b";
-                return `
-                    <a href="${sanitizeText(targetUrl)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-white text-xs font-extrabold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition" style="background-color: ${sanitizeText(bgHex)};">
-                        <i class="${sanitizeText(m.iconClass || 'fa-solid fa-bag-shopping')}"></i>
-                        <span>${sanitizeText(m.label)}</span>
-                    </a>
-                `;
-            }).filter(Boolean).join("");
-
-            if (!buttonsHtml) {
-                box.classList.add("hide");
-            } else {
-                box.classList.remove("hide");
-                container.innerHTML = buttonsHtml;
-            }
-        }
-
-        function renderAdminMarketplacesUI() {
-            const container = document.getElementById("admin-marketplaces-list");
-            if (!container) return;
-            const list = ensureMarketplacesInitialized();
-
-            container.innerHTML = list.map((m, idx) => `
-                <div class="border border-slate-200 bg-[#fafafa] rounded-2xl p-4 space-y-3 shadow-sm">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <input type="color" value="${sanitizeText(m.colorHex || '#f59e0b')}" onchange="updateMarketplaceField(${idx}, 'colorHex', this.value)" class="w-8 h-8 rounded-lg cursor-pointer border-0 p-0 bg-transparent flex-shrink-0" title="Warna Tombol">
-                            <input type="text" value="${sanitizeText(m.label || '')}" oninput="updateMarketplaceField(${idx}, 'label', this.value)" placeholder="Nama Marketplace" class="border border-slate-200 bg-white rounded-xl px-3 py-1.5 text-xs font-extrabold text-slate-900 w-40 outline-none focus:border-amber-500">
-                            <select onchange="updateMarketplaceField(${idx}, 'categoryType', this.value)" class="border border-slate-200 bg-white rounded-xl px-2 py-1.5 text-[11px] font-bold text-slate-700 outline-none">
-                                <option value="marketplace" ${m.categoryType !== 'social' ? 'selected' : ''}>🛒 Marketplace</option>
-                                <option value="social" ${m.categoryType === 'social' ? 'selected' : ''}>📱 Sosial Media</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-700 cursor-pointer">
-                                <input type="checkbox" ${m.isActive !== false ? 'checked' : ''} onchange="updateMarketplaceField(${idx}, 'isActive', this.checked)" class="w-4 h-4 accent-emerald-600 rounded">
-                                <span>Aktif</span>
-                            </label>
-                            ${String(m.id || '').startsWith('mp_custom_') ? `
-                                <button type="button" onclick="removeMarketplaceChannel(${idx})" class="text-red-500 hover:text-red-700 text-xs font-extrabold px-2 py-1" title="Hapus">✕</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div class="sm:col-span-2">
-                            <input type="url" value="${sanitizeText(m.url || '')}" oninput="updateMarketplaceField(${idx}, 'url', this.value)" placeholder="https://..." class="w-full border border-slate-200 bg-white rounded-xl px-3 py-2 text-xs text-slate-700 outline-none focus:border-amber-500">
-                        </div>
-                        <div>
-                            <input type="text" value="${sanitizeText(m.badgeText || '')}" oninput="updateMarketplaceField(${idx}, 'badgeText', this.value)" placeholder="Label / Badge (Official)" class="w-full border border-slate-200 bg-white rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:border-amber-500">
-                        </div>
-                    </div>
-                </div>
-            `).join("");
-        }
-
-        function updateMarketplaceField(idx, field, value) {
-            const list = ensureMarketplacesInitialized();
-            if (!list[idx]) return;
-            list[idx][field] = value;
-            renderPublicMarketplaces();
-            saveStateToStorage(false);
-            clearTimeout(backUrlSyncDebounceTimer);
-            backUrlSyncDebounceTimer = setTimeout(() => {
-                saveStateToStorage(true);
-            }, 700);
-        }
-
-        function addNewMarketplaceChannel() {
-            const list = ensureMarketplacesInitialized();
-            list.push({
-                id: "mp_custom_" + Date.now(),
-                platformKey: "custom",
-                label: "Marketplace Baru",
-                url: "https://",
-                categoryType: "marketplace",
-                badgeText: "Official Store",
-                colorHex: "#f59e0b",
-                iconClass: "fa-solid fa-bag-shopping",
-                isActive: true
-            });
-            renderAdminMarketplacesUI();
-            renderPublicMarketplaces();
-            saveStateToStorage(true);
-            showToast("Saluran Marketplace baru ditambahkan! Silakan isi URL-nya.", "success");
-        }
-
-        function removeMarketplaceChannel(idx) {
-            const list = ensureMarketplacesInitialized();
-            if (!list[idx]) return;
-            list.splice(idx, 1);
-            renderAdminMarketplacesUI();
-            renderPublicMarketplaces();
-            saveStateToStorage(true);
-            showToast("Saluran Marketplace dihapus.", "info");
-        }
-
         function applySettingsToDOM() {
             storeSettings = deepDecodeObjectStrings(storeSettings);
             document.documentElement.style.setProperty("--card-bg", storeSettings.cardMain || "#18181b");
@@ -6090,20 +5816,12 @@
             document.documentElement.style.setProperty("--gradient-angle", gradAngle);
 
             document.getElementById("nav-store-name").textContent = decodeEntities(storeSettings.storeName);
-            const footerStoreName = document.getElementById("footer-store-name");
-            if (footerStoreName) footerStoreName.textContent = decodeEntities(storeSettings.storeName);
             const adminBannerName = document.getElementById("admin-banner-store-name");
             if (adminBannerName) adminBannerName.textContent = decodeEntities(storeSettings.storeName);
             const navSlogan = document.getElementById("nav-store-slogan");
             if (navSlogan) navSlogan.textContent = decodeEntities(storeSettings.storeSlogan || "Print Your Solution");
-            const footerSlogan = document.getElementById("footer-store-slogan");
-            if (footerSlogan) footerSlogan.textContent = decodeEntities((storeSettings.storeSlogan || "Print Your Solution") + " \u2022 Kualitas Tajam & Presisi");
-            const footerAddr = document.getElementById("footer-store-address");
-            if (footerAddr) footerAddr.innerHTML = `<i class="fa-solid fa-location-dot text-amber-500 mr-1.5"></i>${sanitizeText(storeSettings.storeAddress || "ANUGERAH_ART JL BHAYANGKARI NO 117 DS JUWET KENONGO RT 04 RW 02 KEC.PORONG KAB.SIDOARJO")}`;
-            const footerDigLink = document.getElementById("footer-digital-link");
-            if (footerDigLink && storeSettings.digitalLink) footerDigLink.href = storeSettings.digitalLink;
-            const footerLogo = document.getElementById("footer-logo-img");
-            if (footerLogo && storeSettings.logoUrl) footerLogo.src = storeSettings.logoUrl;
+            const resolvedLogoUrl = resolveStoreLogoUrl(storeSettings.logoUrl);
+            storeSettings.logoUrl = resolvedLogoUrl;
 
             const navWaText = document.getElementById("nav-wa-btn-text");
             if (navWaText) navWaText.textContent = decodeEntities(storeSettings.waLabel || "Chat Admin");
@@ -6168,8 +5886,8 @@
 
             const navLogo = document.getElementById("nav-logo-img");
             const setLogoPrev = document.getElementById("setting-logo-preview");
-            if (navLogo && storeSettings.logoUrl) navLogo.src = storeSettings.logoUrl;
-            if (setLogoPrev && storeSettings.logoUrl) setLogoPrev.src = storeSettings.logoUrl;
+            if (navLogo) navLogo.src = resolvedLogoUrl;
+            if (setLogoPrev) setLogoPrev.src = resolvedLogoUrl;
 
             const colorMap = [
                 ["col-accent-gold", "txt-accent-gold", storeSettings.primaryColor || "#f59e0b"],
@@ -6444,7 +6162,7 @@
             if (!requireAdminAuth()) return;
             const resBox = document.getElementById("system-audit-results");
             if (resBox) {
-                resBox.innerHTML = `<div class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2 text-amber-500"></i>Menjalankan audit menyeluruh 7 titik pada Vercel &amp; Supabase...</div>`;
+                resBox.innerHTML = `<div class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2 text-amber-500"></i>Menjalankan audit menyeluruh 6 titik pada Vercel &amp; Supabase...</div>`;
             }
             document.getElementById("modal-system-audit").classList.remove("hide");
 
@@ -6491,18 +6209,6 @@
                         ? `Aktif • Terindeks ${relCount ?? 0} baris produk di PostgreSQL.`
                         : `Perhatian: ${relErr.message}`
                 });
-
-                const { count: mpCount, error: mpErr } = await supabaseClient
-                    .from("marketplaces")
-                    .select("id", { count: "exact", head: true });
-
-                checks.push({
-                    ok: !mpErr,
-                    title: "4. Tabel public.marketplaces (Data Marketplace & Sosmed)",
-                    detail: !mpErr
-                        ? `Aktif • Tersimpan ${mpCount ?? (storeSettings.marketplaces || []).length} saluran marketplace & sosial media di Supabase.`
-                        : `Perhatian: ${mpErr.message}`
-                });
             } else {
                 checks.push({
                     ok: false,
@@ -6515,14 +6221,14 @@
             const noPhotoCount = products.filter(p => !Array.isArray(p.photos) || p.photos.length === 0).length;
             checks.push({
                 ok: invalidPriceCount === 0 && noPhotoCount === 0,
-                title: "5. Integritas Katalog Produk, Variasi & Galeri Foto",
+                title: "4. Integritas Katalog Produk, Variasi & Galeri Foto",
                 detail: `Total ${products.length} produk • ${invalidPriceCount} harga kosong • ${noPhotoCount} tanpa foto.`
             });
 
             const pendingOps = getPendingAdminOps();
             checks.push({
                 ok: !pendingOps.hasDirtyChanges,
-                title: "6. Status Antrean Sinkronisasi Lintas Perangkat",
+                title: "5. Status Antrean Sinkronisasi Lintas Perangkat",
                 detail: !pendingOps.hasDirtyChanges
                     ? "Bersih (0 perubahan tertunda) • Seluruh perubahan sudah terkirim ke Supabase."
                     : `Ada ${Object.keys(pendingOps.upserts).length} ubahan & ${pendingOps.deletes.length} hapus menunggu sinkronisasi.`
@@ -6531,7 +6237,7 @@
             const cleanBack = normalizeBackUrl(storeSettings.backButtonUrl);
             checks.push({
                 ok: true,
-                title: "7. Kesiapan Deployment Frontend Vercel",
+                title: "6. Kesiapan Deployment Frontend Vercel",
                 detail: `Siap Deploy Vercel (index.html + vercel.json) • Link Kembali: ${cleanBack || "Mode Otomatis"}.`
             });
 
@@ -6617,19 +6323,20 @@
 
         const SUPABASE_SQL_BACKEND_SCRIPT = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
+
 DROP TABLE IF EXISTS public.portfolios CASCADE;
 DROP TABLE IF EXISTS public.reviews CASCADE;
+DROP TABLE IF EXISTS public.marketplaces CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.anugerah_cloud_store (
     id TEXT PRIMARY KEY DEFAULT 'main_store_data',
     products JSONB NOT NULL DEFAULT '[]'::jsonb,
-    marketplaces JSONB NOT NULL DEFAULT '[]'::jsonb,
     store_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 ALTER TABLE public.anugerah_cloud_store ADD COLUMN IF NOT EXISTS products JSONB NOT NULL DEFAULT '[]'::jsonb;
-ALTER TABLE public.anugerah_cloud_store ADD COLUMN IF NOT EXISTS marketplaces JSONB NOT NULL DEFAULT '[]'::jsonb;
 ALTER TABLE public.anugerah_cloud_store ADD COLUMN IF NOT EXISTS store_settings JSONB NOT NULL DEFAULT '{}'::jsonb;
 ALTER TABLE public.anugerah_cloud_store ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
@@ -6654,7 +6361,6 @@ CREATE TABLE IF NOT EXISTS public.store_settings (
     store_address TEXT NOT NULL DEFAULT 'ANUGERAH_ART JL BHAYANGKARI NO 117 DS JUWET KENONGO RT 04 RW 02 KEC.PORONG KAB.SIDOARJO',
     back_button_url TEXT NOT NULL DEFAULT '',
     back_button_label TEXT NOT NULL DEFAULT 'Kembali',
-    marketplaces JSONB NOT NULL DEFAULT '[]'::jsonb,
     raw_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -6665,7 +6371,6 @@ ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS wa_number TEXT NOT NU
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS store_address TEXT NOT NULL DEFAULT 'ANUGERAH_ART JL BHAYANGKARI NO 117 DS JUWET KENONGO RT 04 RW 02 KEC.PORONG KAB.SIDOARJO';
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS back_button_url TEXT NOT NULL DEFAULT '';
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS back_button_label TEXT NOT NULL DEFAULT 'Kembali';
-ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS marketplaces JSONB NOT NULL DEFAULT '[]'::jsonb;
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS raw_settings JSONB NOT NULL DEFAULT '{}'::jsonb;
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
@@ -6687,7 +6392,6 @@ CREATE TABLE IF NOT EXISTS public.products (
     variations JSONB NOT NULL DEFAULT '[]'::jsonb,
     wholesale_tiers JSONB NOT NULL DEFAULT '[]'::jsonb,
     photos JSONB NOT NULL DEFAULT '[]'::jsonb,
-    marketplace_links JSONB NOT NULL DEFAULT '{}'::jsonb,
     video_url TEXT DEFAULT '',
     card_style TEXT NOT NULL DEFAULT 'standard',
     sort_order INTEGER NOT NULL DEFAULT 0,
@@ -6695,23 +6399,30 @@ CREATE TABLE IF NOT EXISTS public.products (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS public.marketplaces (
-    id TEXT PRIMARY KEY,
-    platform_key TEXT NOT NULL DEFAULT 'custom',
-    label TEXT NOT NULL,
-    url TEXT NOT NULL DEFAULT '',
-    category_type TEXT NOT NULL DEFAULT 'marketplace',
-    badge_text TEXT DEFAULT '',
-    color_hex TEXT DEFAULT '#f59e0b',
-    icon_class TEXT DEFAULT 'fa-solid fa-store',
-    is_active BOOLEAN NOT NULL DEFAULT true,
-    sort_order INTEGER NOT NULL DEFAULT 0,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    invoice_no TEXT NOT NULL,
+    buyer_name TEXT NOT NULL,
+    buyer_phone TEXT NOT NULL,
+    buyer_address TEXT NOT NULL,
+    buyer_note TEXT DEFAULT '',
+    items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    total_price NUMERIC NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated, service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO anon, authenticated, service_role;
 
 ALTER TABLE public.anugerah_cloud_store ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.marketplaces ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.store_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Public Full Sync Access" ON public.anugerah_cloud_store;
 CREATE POLICY "Public Full Sync Access" ON public.anugerah_cloud_store FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
@@ -6719,8 +6430,11 @@ CREATE POLICY "Public Full Sync Access" ON public.anugerah_cloud_store FOR ALL T
 DROP POLICY IF EXISTS "Public Products Access" ON public.products;
 CREATE POLICY "Public Products Access" ON public.products FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Public Marketplaces Access" ON public.marketplaces;
-CREATE POLICY "Public Marketplaces Access" ON public.marketplaces FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Public Store Settings Access" ON public.store_settings;
+CREATE POLICY "Public Store Settings Access" ON public.store_settings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Orders Access" ON public.orders;
+CREATE POLICY "Public Orders Access" ON public.orders FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 INSERT INTO storage.buckets (id, name, public, file_size_limit)
 VALUES ('anugerah-media', 'anugerah-media', true, 52428800),
@@ -6740,8 +6454,7 @@ CREATE OR REPLACE FUNCTION public.get_catalog_sync_meta()
 RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT jsonb_build_object(
         'updated_at', updated_at,
-        'products_count', CASE WHEN jsonb_typeof(products) = 'array' THEN jsonb_array_length(products) ELSE 0 END,
-        'marketplaces_count', CASE WHEN jsonb_typeof(marketplaces) = 'array' THEN jsonb_array_length(marketplaces) ELSE 0 END
+        'products_count', CASE WHEN jsonb_typeof(products) = 'array' THEN jsonb_array_length(products) ELSE 0 END
     ) FROM public.anugerah_cloud_store WHERE id = 'main_store_data' LIMIT 1;
 $$;
 GRANT EXECUTE ON FUNCTION public.get_catalog_sync_meta() TO anon, authenticated;
@@ -6749,19 +6462,20 @@ GRANT EXECUTE ON FUNCTION public.get_catalog_sync_meta() TO anon, authenticated;
 ALTER TABLE public.anugerah_cloud_store REPLICA IDENTITY FULL;
 ALTER TABLE public.products REPLICA IDENTITY FULL;
 ALTER TABLE public.store_settings REPLICA IDENTITY FULL;
-ALTER TABLE public.marketplaces REPLICA IDENTITY FULL;
 
 DO $$
 BEGIN
     BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.anugerah_cloud_store; EXCEPTION WHEN duplicate_object THEN NULL; END;
     BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.products; EXCEPTION WHEN duplicate_object THEN NULL; END;
     BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.store_settings; EXCEPTION WHEN duplicate_object THEN NULL; END;
-    BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.marketplaces; EXCEPTION WHEN duplicate_object THEN NULL; END;
 END $$;
 
-INSERT INTO public.anugerah_cloud_store (id, products, marketplaces, store_settings, updated_at)
-VALUES ('main_store_data', '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, NOW())
-ON CONFLICT (id) DO NOTHING;`;
+INSERT INTO public.anugerah_cloud_store (id, products, store_settings, updated_at)
+VALUES ('main_store_data', '[]'::jsonb, '{}'::jsonb, NOW())
+ON CONFLICT (id) DO NOTHING;
+
+NOTIFY pgrst, 'reload schema';
+NOTIFY pgrst, 'reload config';`;
 
         function downloadJsonBackup() {
             const payload = buildBackupExportPayload();
@@ -6794,11 +6508,11 @@ ON CONFLICT (id) DO NOTHING;`;
                         storeSettings = {
                             ...storeSettings,
                             ...deepDecodeObjectStrings(converted.storeSettings),
+                            logoUrl: resolveStoreLogoUrl(converted.storeSettings.logoUrl || storeSettings.logoUrl),
                             supabaseUrl: activeCreds.url,
                             supabaseAnonKey: activeCreds.anonKey
                         };
                     }
-                    ensureMarketplacesInitialized();
                     isUsingDefaultSeedCatalog = false;
                     await saveStateToStorage(true, { upserted: products });
                     applySettingsToDOM();

@@ -1813,9 +1813,29 @@
                     </ol>
                 </div>
 
+                <div id="vercel-key-injector-box" class="bg-amber-50 border border-amber-300 rounded-2xl p-3.5 space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-key text-amber-600"></i> Status Kunci Koneksi Supabase untuk File Vercel:
+                        </span>
+                        <span id="vercel-key-status-pill" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">Mengecek...</span>
+                    </div>
+                    <div id="vercel-key-missing-form" class="hide space-y-2 pt-1">
+                        <p class="text-[11px] text-amber-900">
+                            Tempelkan <strong>Supabase Anon Public Key (eyJ...)</strong> di bawah ini sekali saja agar otomatis tertanam permanen ke dalam file <code>index.html</code> yang akan di-upload ke Vercel:
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="vercel-embed-anon-key" placeholder="Tempel eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="flex-1 border border-amber-400 bg-white rounded-xl px-3 py-2 text-xs font-mono text-slate-900 outline-none">
+                            <button type="button" onclick="applySupabaseKeyForVercelBundle()" class="bg-slate-900 hover:bg-black text-amber-400 text-xs font-extrabold px-4 py-2 rounded-xl whitespace-nowrap">
+                                Tanamkan ke File Vercel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-[11px] font-extrabold text-slate-700 mb-1">Pratinjau Kode <code>index.html</code> Siap Deploy Vercel (Sudah Tertanam Katalog &amp; Pengaturan Terbaru):</label>
-                    <textarea id="vercel-frontend-code" readonly rows="8" class="w-full bg-slate-900 text-amber-300 font-mono text-[11px] p-3.5 rounded-2xl outline-none"></textarea>
+                    <textarea id="vercel-frontend-code" readonly rows="7" class="w-full bg-slate-900 text-amber-300 font-mono text-[11px] p-3.5 rounded-2xl outline-none"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
@@ -1910,107 +1930,52 @@
     <script>
         // ============================================================================
         // KONFIGURASI INTERNAL SUPABASE (TIDAK DITAMPILKAN DI UI PANEL ADMIN)
-        // Tempelkan anonKey (eyJ...) dari Supabase Dashboard -> Settings -> API di bawah:
         // ============================================================================
         const FRONTEND_SUPABASE_CONFIG = {
-            url: "https://wxqtfygclsofmvkiqfpu.supabase.co",
-            anonKey: "sb_publishable_R0r-abTsrkDWM6pdScMDBg_Xs4gzvoL" // Isi anon public key Supabase Anda di sini sebelum deploy ke Vercel
+            url: "https://yobrveoosucbsionvoja.supabase.co",
+            anonKey: "sb_publishable_uxyw1hMO-ymmTQ7NeBv0BA_3IjmD1ib" // Otomatis terisi saat di-export melalui tombol Deploy Vercel
         };
 
-        // Pelindung WebSocket untuk lingkungan pratinjau sandbox
-        (function installSafeWebSocketGuard() {
-            const NativeWebSocket = window.WebSocket;
-            if (!NativeWebSocket) return;
-            function SafeWebSocket(url, protocols) {
-                try {
-                    return protocols !== undefined ? new NativeWebSocket(url, protocols) : new NativeWebSocket(url);
-                } catch (err) {
-                    return {
-                        readyState: 3,
-                        close() {},
-                        send() {},
-                        addEventListener() {},
-                        removeEventListener() {}
-                    };
-                }
-            }
-            SafeWebSocket.CONNECTING = NativeWebSocket.CONNECTING;
-            SafeWebSocket.OPEN = NativeWebSocket.OPEN;
-            SafeWebSocket.CLOSING = NativeWebSocket.CLOSING;
-            SafeWebSocket.CLOSED = NativeWebSocket.CLOSED;
-            SafeWebSocket.prototype = NativeWebSocket.prototype;
-            window.WebSocket = SafeWebSocket;
-        })();
+        const DEFAULT_SUPABASE_URL = FRONTEND_SUPABASE_CONFIG.url || "https://yobrveoosucbsionvoja.supabase.co";
+        const DEFAULT_SUPABASE_ANON_KEY = FRONTEND_SUPABASE_CONFIG.anonKey || "sb_publishable_uxyw1hMO-ymmTQ7NeBv0BA_3IjmD1ib";
 
-        const SVG_NAMETAG_SILVER_PLAT = "data:image/svg+xml;utf8," + encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+        function isCanvasSandboxEnvironment() {
+            try {
+                const proto = window.location.protocol || "";
+                const host = window.location.hostname || "";
+                return (
+                    proto === "about:" ||
+                    proto === "blob:" ||
+                    proto === "data:" ||
+                    proto === "srcdoc:" ||
+                    host.includes("googleusercontent.com") ||
+                    host.includes("webcontainer") ||
+                    host === ""
+                );
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const SVG_NAMETAG_SILVER_PLAT = "data:image/svg+xml;utf8," + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
                 <defs>
-                    <linearGradient id="silverPlate" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#f8fafc"/>
-                        <stop offset="45%" stop-color="#cbd5e1"/>
-                        <stop offset="55%" stop-color="#94a3b8"/>
-                        <stop offset="100%" stop-color="#e2e8f0"/>
-                    </linearGradient>
-                    <linearGradient id="woodBg" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#f3e5ab"/>
-                        <stop offset="100%" stop-color="#e6cfa0"/>
+                    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#0f172a"/>
+                        <stop offset="100%" stop-color="#1e293b"/>
                     </linearGradient>
                 </defs>
-                <rect width="600" height="600" fill="#f8fafc"/>
-                <rect x="30" y="65" width="540" height="410" rx="28" fill="url(#woodBg)" stroke="#d4b483" stroke-width="4"/>
-                <rect x="48" y="105" width="504" height="150" rx="16" fill="url(#silverPlate)" stroke="#64748b" stroke-width="3"/>
-                <text x="120" y="195" font-family="Arial, sans-serif" font-weight="900" font-size="38" fill="#1e293b">BYD</text>
-                <text x="415" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="34" fill="#0f172a">Arif</text>
-                <line x1="290" y1="182" x2="530" y2="182" stroke="#334155" stroke-width="3"/>
-                <text x="415" y="212" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="22" fill="#334155">Brand Consultant</text>
-                <rect x="48" y="295" width="504" height="150" rx="16" fill="url(#silverPlate)" stroke="#64748b" stroke-width="3"/>
-                <text x="120" y="385" font-family="Arial, sans-serif" font-weight="900" font-size="38" fill="#1e293b">BYD</text>
-                <text x="415" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="34" fill="#0f172a">Keysha</text>
-                <line x1="290" y1="372" x2="530" y2="372" stroke="#334155" stroke-width="3"/>
-                <text x="415" y="402" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="22" fill="#334155">Brand Consultant</text>
-                <text x="300" y="545" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-weight="900" font-size="44" fill="#0f172a" letter-spacing="2">FULL SILVER PLAT</text>
-            </svg>
-        `);
-
-        const DEFAULT_FIFTEEN_PHOTOS = [
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157453732_omw52.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157485883_0vr7f.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486239_o28t8.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486606_xyapl.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486965_x05wn.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157487318_57j9n.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157487674_t7n7q.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157487985_7vdk8.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157488388_6xt58.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157489133_bwjo0.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157489461_ny2ny.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157489819_ns3cc.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157490174_s4azr.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157490527_c6n0q.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157490815_4sfcj.webp"
-        ];
-
-        const SILVER_FIFTEEN_PHOTOS = [
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150080115_49g08.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150080650_2t6up.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150081047_3p0y0.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150081482_4zsoo.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150081856_foy9j.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150082383_mutbd.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150082916_k55zh.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150083330_mhkd2.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150083916_eaiiu.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150084414_bb0xg.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150084796_svrrf.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150085268_14vrl.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150085831_icjgk.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150086357_cu22l.webp",
-            "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150086980_m96ml.webp"
-        ];
+                <rect width="400" height="400" fill="url(#g)"/>
+                <rect x="14" y="14" width="372" height="372" rx="24" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                <text x="200" y="175" fill="#fbbf24" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle">ANUGERAH_ART</text>
+                <text x="200" y="215" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">PRINT YOUR SOLUTION</text>
+                <text x="200" y="255" fill="#94a3b8" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">FREE DESAIN • PROSES KILAT 1X24 JAM</text>
+            </svg>`
+        );
 
         const DEFAULT_VARIATIONS_NAMETAG = [
             {
-                groupName: "UKURAN STEMPEL",
+                groupName: "PILIHAN PENGAIT",
                 options: [
                     { name: "PENITI", price: 25000 },
                     { name: "MAGNET", price: 30000 },
@@ -2018,7 +1983,7 @@
                 ]
             },
             {
-                groupName: "WARNA TINTA",
+                groupName: "MODEL TEPIAN",
                 options: [
                     { name: "TEPIAN HITAM", price: 0 },
                     { name: "TANPA TEPIAN", price: 0 }
@@ -2028,54 +1993,6 @@
 
         const INITIAL_PRODUCTS = [
             {
-                id: "p1",
-                name: "Stempel Flash / Otomatis Bulat & Persegi",
-                category: "Stempel",
-                basePrice: 25000,
-                discountPercent: 15,
-                soldCount: 250,
-                soldLabel: "250 Terjual",
-                rating: 5,
-                description: "Stempel Flash Otomatis tanpa bantalan tinta, hasil cap tajam dan anti luntur, pengerjaan cepat serta gratis desain.",
-                isPromo: true,
-                isBestseller: false,
-                isPreorder: false,
-                poDays: 0,
-                hasVariations: true,
-                variations: [
-                    { groupName: "UKURAN STEMPEL", options: [{ name: "Kecil (Paraf / Gantungan)", price: 25000 }, { name: "Standar (Bulat 3.5cm / Persegi)", price: 35000 }, { name: "Besar / Dinas (4.0cm - 5.1cm)", price: 48000 }] },
-                    { groupName: "WARNA TINTA", options: [{ name: "1 Warna Pilihan", price: 0 }, { name: "2 Warna Kombinasi", price: 0 }] }
-                ],
-                wholesaleTiers: [{ minQty: 5, discountPercent: 10 }],
-                photos: ["https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80"],
-                videoUrl: "",
-                cardStyle: "dark_stamp"
-            },
-            {
-                id: "p_foto_1",
-                name: "LEM GLEE (LEM PEREKAT PENITI NAMETAG)",
-                category: "Bahan & Aksesoris Nametag",
-                basePrice: 7500,
-                discountPercent: 0,
-                soldCount: 120,
-                soldLabel: "120 Terjual",
-                rating: 4.9,
-                description: "Lem Glee daya rekat super kuat khusus untuk perekat peniti, paku, dan magnet pada nametag akrilik maupun plat.",
-                isPromo: false,
-                isBestseller: false,
-                isPreorder: false,
-                poDays: 0,
-                hasVariations: true,
-                variations: [
-                    { groupName: "KEMASAN", options: [{ name: "Satuan (1 Botol)", price: 7500 }, { name: "Paket 5 Botol", price: 35000 }, { name: "Paket 10 Botol", price: 65000 }] },
-                    { groupName: "TIPE", options: [{ name: "Original Super Kuat", price: 0 }] }
-                ],
-                wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                photos: ["https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80"],
-                videoUrl: "",
-                cardStyle: "slate_glue"
-            },
-            {
                 id: "p_copy_1794157402496_a8c3",
                 name: "NAMETAG AKRILIK 1 X 24 JAM",
                 category: "NAMETAG",
@@ -2084,40 +2001,26 @@
                 soldCount: 5000,
                 soldLabel: "5RB+ Terjual",
                 rating: 5,
-                description: "Tampil lebih profesional, rapi, dan elegan dengan Name Tag Custom Full Gold Premium! Sangat cocok digunakan untuk instansi pemerintah (PNS/ASN), pegawai bank, karyawan swasta, guru, tenaga medis, mahasiswa, hingga panitia acara.",
                 isPromo: true,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
-                hasVariations: true,
-                variations: JSON.parse(JSON.stringify(DEFAULT_VARIATIONS_NAMETAG)),
-                wholesaleTiers: [{ minQty: 5, discountPercent: 5 }, { minQty: 10, discountPercent: 7 }],
-                photos: [...DEFAULT_FIFTEEN_PHOTOS],
+                description: "Tampil lebih profesional, rapi, dan elegan dengan Name Tag Custom Premium lapis resin bening. Proses super kilat 1x24 Jam langsung jadi! Pilihan pengait Peniti, Magnet, dan Paku.",
+                photos: [
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157453732_omw52.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157485883_0vr7f.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486239_o28t8.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486606_xyapl.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794157486965_x05wn.webp"
+                ],
                 videoUrl: "",
-                cardStyle: "standard"
-            },
-            {
-                id: "p_foto_3",
-                name: "Nametag Dinas Plat & Akrilik untuk PNS ASN PPPK Kejaksaan",
-                category: "Nametag",
-                basePrice: 21000,
-                discountPercent: 16,
-                soldCount: 450,
-                soldLabel: "450 Terjual",
-                rating: 4.9,
-                description: "Nametag Dinas Pemdes, Pemkot, Pemkab, Pemprov, ASN, PNS, PPPK, Kejaksaan dll. Tersedia bahan Plat & Akrilik dengan pengait Peniti, Magnet & Paku. 1x24 Jam Selesai!",
-                isPromo: true,
-                isBestseller: true,
-                isPreorder: false,
-                poDays: 0,
                 hasVariations: true,
                 variations: [
-                    { groupName: "BAHAN & PENGAIT", options: [{ name: "Akrilik + Peniti", price: 21000 }, { name: "Akrilik + Magnet", price: 25000 }, { name: "Plat Kuningan + Peniti", price: 28000 }, { name: "Plat Kuningan + Magnet", price: 32000 }] },
-                    { groupName: "FINISHING", options: [{ name: "Lapis Resin Cembung", price: 0 }, { name: "Tanpa Resin (Datar)", price: 0 }] }
+                    { groupName: "PILIHAN PENGAIT", options: [{ name: "PENITI", price: 25000 }, { name: "MAGNET", price: 30000 }, { name: "PAKU", price: 30000 }] },
+                    { groupName: "MODEL TEPIAN", options: [{ name: "TEPIAN HITAM", price: 0 }, { name: "TANPA TEPIAN", price: 0 }] }
                 ],
-                wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 15 }],
-                photos: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&q=80"],
-                videoUrl: "",
+                wholesaleTiers: [{ minQty: 5, discountPercent: 5 }, { minQty: 10, discountPercent: 7 }],
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2129,115 +2032,200 @@
                 soldCount: 5000,
                 soldLabel: "5RB+ Terjual",
                 rating: 5,
-                description: "Bahan Utama: Plat Premium Full Silver (Kokoh & mewah). Finishing: Lapis Resin Bening. Waktu Pengerjaan: SUPER KILAT 1x24 Jam langsung jadi tanpa sistem Pre-Order (PO) berhari-hari.",
                 isPromo: true,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Name Tag Plat Premium Full Silver lapis resin bening mengkilap. Super kilat 1x24 Jam selesai tanpa PO berhari-hari. Tersedia pengait Peniti, Magnet, dan Paku.",
+                photos: [
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150080115_49g08.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150080650_2t6up.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150081047_3p0y0.webp",
+                    "https://wxqtfygclsofmvkiqfpu.supabase.co/storage/v1/object/public/product-images/photos/prod_1794150081482_4zsoo.webp"
+                ],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
-                    { groupName: "UKURAN STEMPEL", options: [{ name: "PENITI", price: 30000 }, { name: "MAGNET", price: 35000 }, { name: "PAKU", price: 35000 }] },
-                    { groupName: "WARNA TINTA", options: [{ name: "TEPIAN HITAM", price: 0 }, { name: "TANPA TEPIAN", price: 0 }] }
+                    { groupName: "PILIHAN PENGAIT", options: [{ name: "PENITI", price: 30000 }, { name: "MAGNET", price: 35000 }, { name: "PAKU", price: 35000 }] },
+                    { groupName: "MODEL TEPIAN", options: [{ name: "TEPIAN HITAM", price: 0 }, { name: "TANPA TEPIAN", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 5, discountPercent: 5 }, { minQty: 10, discountPercent: 7 }],
-                photos: [...SILVER_FIFTEEN_PHOTOS],
+                marketplaceLinks: {},
+                cardStyle: "standard"
+            },
+            {
+                id: "p1",
+                name: "Stempel Flash / Otomatis Bulat & Persegi",
+                category: "Stempel",
+                basePrice: 25000,
+                discountPercent: 15,
+                soldCount: 250,
+                soldLabel: "250 Terjual",
+                rating: 5,
+                isPromo: true,
+                isBestseller: false,
+                isPreorder: false,
+                poDays: 0,
+                description: "Stempel Flash Otomatis tanpa bantalan tinta, hasil cap tajam dan anti luntur, pengerjaan cepat serta gratis desain.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
                 videoUrl: "",
+                hasVariations: true,
+                variations: [
+                    { groupName: "UKURAN STEMPEL", options: [{ name: "Kecil (Paraf / Gantungan)", price: 25000 }, { name: "Standar (Bulat 3.5cm / Persegi)", price: 35000 }, { name: "Besar / Dinas (4.0cm - 5.1cm)", price: 48000 }] },
+                    { groupName: "WARNA TINTA", options: [{ name: "1 Warna Pilihan", price: 0 }, { name: "2 Warna Kombinasi", price: 0 }] }
+                ],
+                wholesaleTiers: [{ minQty: 5, discountPercent: 10 }],
+                marketplaceLinks: {},
+                cardStyle: "dark_stamp"
+            },
+            {
+                id: "p_foto_1",
+                name: "LEM GLEE (LEM PEREKAT PENITI NAMETAG)",
+                category: "Bahan & Aksesoris Nametag",
+                basePrice: 7500,
+                discountPercent: 0,
+                soldCount: 120,
+                soldLabel: "120 Terjual",
+                rating: 4.9,
+                isPromo: false,
+                isBestseller: false,
+                isPreorder: false,
+                poDays: 0,
+                description: "Lem Glee daya rekat super kuat khusus untuk perekat peniti, paku, dan magnet pada nametag akrilik maupun plat.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
+                hasVariations: true,
+                variations: [
+                    { groupName: "KEMASAN", options: [{ name: "Satuan (1 Botol)", price: 7500 }, { name: "Paket 5 Botol", price: 35000 }, { name: "Paket 10 Botol", price: 65000 }] },
+                    { groupName: "TIPE", options: [{ name: "Original Super Kuat", price: 0 }] }
+                ],
+                wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
+                marketplaceLinks: {},
+                cardStyle: "slate_glue"
+            },
+            {
+                id: "p_foto_3",
+                name: "Nametag Dinas Plat & Akrilik untuk PNS ASN PPPK Kejaksaan",
+                category: "NAMETAG",
+                basePrice: 21000,
+                discountPercent: 16,
+                soldCount: 450,
+                soldLabel: "450 Terjual",
+                rating: 4.9,
+                isPromo: true,
+                isBestseller: true,
+                isPreorder: false,
+                poDays: 0,
+                description: "Nametag Dinas Pemdes, Pemkot, Pemkab, Pemprov, ASN, PNS, PPPK, Kejaksaan dll. Tersedia bahan Plat & Akrilik dengan pengait Peniti, Magnet & Paku. 1x24 Jam Selesai!",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
+                hasVariations: true,
+                variations: [
+                    { groupName: "BAHAN & PENGAIT", options: [{ name: "Akrilik + Peniti", price: 21000 }, { name: "Akrilik + Magnet", price: 25000 }, { name: "Plat Kuningan + Peniti", price: 28000 }, { name: "Plat Kuningan + Magnet", price: 32000 }] },
+                    { groupName: "FINISHING", options: [{ name: "Lapis Resin Cembung", price: 0 }, { name: "Tanpa Resin (Datar)", price: 0 }] }
+                ],
+                wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 15 }],
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
                 id: "p_foto_4",
                 name: "Nametag Akrilik Custom 2.5x8 Cm Murah Cepat PDH TNI & POLRI",
-                category: "Nametag",
+                category: "NAMETAG",
                 basePrice: 6500,
                 discountPercent: 0,
                 soldCount: 1200,
-                soldLabel: "1,2RB+ Terjual",
+                soldLabel: "1RB+ Terjual",
                 rating: 4.9,
-                description: "Nametag PDH TNI, POLRI & Umum ukuran 2.5 cm x 8 cm. Proses cepat, presisi tinggi, profesional. Pilihan tepian putih atau full hitam.",
                 isPromo: false,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Nametag PDH TNI, POLRI & Umum ukuran 2.5 cm x 8 cm. Proses cepat, presisi tinggi, profesional. Pilihan tepian putih atau full hitam.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "PENGAIT", options: [{ name: "Peniti", price: 6500 }, { name: "Paku Kupu-kupu", price: 7500 }, { name: "Magnet Super Kuat", price: 13500 }] },
                     { groupName: "MODEL LIST", options: [{ name: "Tepian Putih", price: 0 }, { name: "Full Hitam", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                photos: [SVG_NAMETAG_SILVER_PLAT],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
                 id: "p_foto_17",
                 name: "NAMETAG RESIN AKRILIK ASN / PNS / P3K / GURU / DLL BISA CUSTOM",
-                category: "Nametag",
+                category: "NAMETAG",
                 basePrice: 6500,
                 discountPercent: 0,
                 soldCount: 10000,
                 soldLabel: "10RB+ Terjual",
                 rating: 4.9,
-                description: "Nametag Best Seller lapis resin akrilik bening mengkilap ukuran 2 cm x 8 cm untuk ASN, PNS, P3K, Guru, Karyawan, dan Siswa. Pilihan Tepian, Full Hitam, Full Putih.",
                 isPromo: false,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Nametag Best Seller lapis resin akrilik bening mengkilap ukuran 2 cm x 8 cm untuk ASN, PNS, P3K, Guru, Karyawan, dan Siswa.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "PENGAIT", options: [{ name: "Peniti", price: 6500 }, { name: "Paku", price: 7500 }, { name: "Magnet", price: 13500 }] },
                     { groupName: "MODEL WARNA", options: [{ name: "Tepian Putih", price: 0 }, { name: "Full Hitam", price: 0 }, { name: "Full Putih", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 100, discountPercent: 20 }],
-                photos: [SVG_NAMETAG_SILVER_PLAT],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
                 id: "p_foto_23",
                 name: "Nametag Kuningan Gold Plat Resin Custom Murah Elegan",
-                category: "Nametag",
+                category: "NAMETAG",
                 basePrice: 7500,
                 discountPercent: 0,
                 soldCount: 9200,
-                soldLabel: "9,2RB+ Terjual",
+                soldLabel: "9RB+ Terjual",
                 rating: 4.9,
-                description: "Nametag Gold Plat Kuningan & Akrilik lapis resin ukuran 2 cm x 8 cm. Pilihan Tepian Plat, Full Hitam Plat, dan Full Gold Plat. Terjual 9RB+ pcs!",
                 isPromo: false,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Nametag Gold Plat Kuningan & Akrilik lapis resin ukuran 2 cm x 8 cm. Pilihan Tepian Plat, Full Hitam Plat, dan Full Gold Plat.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "BAHAN & PENGAIT", options: [{ name: "Akrilik Gold + Peniti", price: 7500 }, { name: "Plat Kuningan Gold + Peniti", price: 19000 }, { name: "Plat Kuningan Gold + Magnet", price: 26000 }] },
                     { groupName: "MODEL GOLD", options: [{ name: "Tepian Plat Gold", price: 0 }, { name: "Full Hitam List Gold", price: 0 }, { name: "Full Gold Plat", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }],
-                photos: ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80"],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
                 id: "p_foto_24",
                 name: "NAMETAG BADAN GIZI NASIONAL / NAMETAG BGN PROSES 1X24 JAM SELESAI",
-                category: "Nametag",
+                category: "NAMETAG",
                 basePrice: 21000,
                 discountPercent: 16,
                 soldCount: 340,
                 soldLabel: "340 Terjual",
                 rating: 4.9,
-                description: "Nametag Resmi Badan Gizi Nasional (BGN) untuk Kepala SPPG, Akuntan, Ahli Gizi, dan Staf. Tersedia bahan Plat & Akrilik dengan pengait Peniti, Magnet & Paku. 1x24 Jam Selesai!",
                 isPromo: true,
                 isBestseller: false,
                 isPreorder: false,
                 poDays: 0,
+                description: "Nametag Resmi Badan Gizi Nasional (BGN) untuk Kepala SPPG, Akuntan, Ahli Gizi, dan Staf. Tersedia bahan Plat & Akrilik.",
+                photos: [SVG_NAMETAG_SILVER_PLAT],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "BAHAN & PENGAIT", options: [{ name: "Akrilik BGN + Peniti", price: 21000 }, { name: "Akrilik BGN + Magnet", price: 25000 }, { name: "Plat Kuningan BGN + Peniti", price: 28000 }, { name: "Plat Kuningan BGN + Magnet", price: 32000 }] },
-                    { groupName: "MODEL JABATAN", options: [{ name: "Nama Saja (1 Baris)", price: 0 }, { name: "Nama + Jabatan (Kepala SPPG/Akuntan/dll)", price: 0 }] }
+                    { groupName: "MODEL JABATAN", options: [{ name: "Nama Saja (1 Baris)", price: 0 }, { name: "Nama + Jabatan", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 15 }],
-                photos: [SVG_NAMETAG_SILVER_PLAT],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2247,21 +2235,22 @@
                 basePrice: 8500,
                 discountPercent: 42,
                 soldCount: 3400,
-                soldLabel: "3,4RB+ Terjual",
+                soldLabel: "3RB+ Terjual",
                 rating: 4.9,
-                description: "Paket cetak ID Card bahan PVC tebal standar ATM anti pudar lengkap dengan tali lanyard printing sublimasi 2 sisi + stopper.",
                 isPromo: true,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Paket cetak ID Card bahan PVC tebal standar ATM anti pudar lengkap dengan tali lanyard printing sublimasi 2 sisi + stopper.",
+                photos: ["https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=600&q=80"],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "PAKET", options: [{ name: "ID Card Saja", price: 8500 }, { name: "Lanyard Saja", price: 12000 }, { name: "Paket Lengkap + Holder", price: 19500 }] },
                     { groupName: "LEBAR TALI", options: [{ name: "1.5 cm", price: 0 }, { name: "2 cm (Standar)", price: 0 }, { name: "2.5 cm", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 20, discountPercent: 10 }, { minQty: 100, discountPercent: 20 }],
-                photos: ["https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=600&q=80"],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2271,21 +2260,22 @@
                 basePrice: 18000,
                 discountPercent: 25,
                 soldCount: 4800,
-                soldLabel: "4,8RB+ Terjual",
+                soldLabel: "5RB+ Terjual",
                 rating: 4.9,
-                description: "Cetak spanduk MMT Flexi 280gr / 340gr / Korcin tajam tahan panas dan hujan. Gratis mata ayam di setiap pojok.",
                 isPromo: true,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Cetak spanduk MMT Flexi 280gr / 340gr / Korcin tajam tahan panas dan hujan. Gratis mata ayam di setiap pojok.",
+                photos: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "BAHAN FLEXI", options: [{ name: "Flexi 280gr (Permeter)", price: 18000 }, { name: "Flexi 340gr Tebal", price: 25000 }, { name: "Albatros Indoor", price: 45000 }] },
                     { groupName: "FINISHING", options: [{ name: "Mata Ayam (Ring)", price: 0 }, { name: "Selongsong Bambu", price: 0 }, { name: "Potong Pas", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 50, discountPercent: 20 }],
-                photos: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             },
             {
@@ -2297,25 +2287,53 @@
                 soldCount: 890,
                 soldLabel: "890 Terjual",
                 rating: 5,
-                description: "Plakat akrilik potong laser presisi tinggi dengan cetak UV flatbed full color. Cocok untuk kenang-kenangan, KKN, seminar, dan wisuda.",
                 isPromo: true,
                 isBestseller: true,
                 isPreorder: false,
                 poDays: 0,
+                description: "Plakat akrilik potong laser presisi tinggi dengan cetak UV flatbed full color. Cocok untuk kenang-kenangan, KKN, seminar, dan wisuda.",
+                photos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"],
+                videoUrl: "",
                 hasVariations: true,
                 variations: [
                     { groupName: "KETEBALAN & BOX", options: [{ name: "Akrilik 5mm Tanpa Box", price: 65000 }, { name: "Akrilik 8mm + Box Bludru", price: 115000 }, { name: "Akrilik 10mm Mewah + Box", price: 145000 }] },
                     { groupName: "MODEL DUDUKAN", options: [{ name: "Dudukan Akrilik Hitam", price: 0 }, { name: "Dudukan Kayu Jati", price: 0 }] }
                 ],
                 wholesaleTiers: [{ minQty: 10, discountPercent: 10 }, { minQty: 30, discountPercent: 20 }],
-                photos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"],
-                videoUrl: "",
+                marketplaceLinks: {},
                 cardStyle: "standard"
             }
         ];
 
-        const DEFAULT_SUPABASE_URL = FRONTEND_SUPABASE_CONFIG.url || "https://wxqtfygclsofmvkiqfpu.supabase.co";
-        const DEFAULT_SUPABASE_ANON_KEY = FRONTEND_SUPABASE_CONFIG.anonKey || "";
+        function resolveActiveSupabaseCredentials() {
+            let resolvedUrl = (FRONTEND_SUPABASE_CONFIG.url || "").trim();
+            let resolvedKey = (FRONTEND_SUPABASE_CONFIG.anonKey || "").trim();
+
+            try {
+                const hashParams = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
+                const queryParams = new URLSearchParams(window.location.search || "");
+                const urlFromParam = hashParams.get("sb_url") || queryParams.get("sb_url");
+                const keyFromParam = hashParams.get("sb_key") || queryParams.get("sb_key");
+                if (urlFromParam && urlFromParam.startsWith("http")) {
+                    resolvedUrl = urlFromParam.trim();
+                    localStorage.setItem("anugerah_sb_url_v1", resolvedUrl);
+                }
+                if (keyFromParam && keyFromParam.split(".").length === 3 && keyFromParam.length > 80) {
+                    resolvedKey = keyFromParam.trim();
+                    localStorage.setItem("anugerah_sb_key_v1", resolvedKey);
+                }
+            } catch (e) {}
+
+            try {
+                if (!resolvedUrl) resolvedUrl = (localStorage.getItem("anugerah_sb_url_v1") || "").trim();
+                if (!resolvedKey) resolvedKey = (localStorage.getItem("anugerah_sb_key_v1") || "").trim();
+            } catch (e) {}
+
+            return {
+                url: resolvedUrl || DEFAULT_SUPABASE_URL,
+                anonKey: resolvedKey || DEFAULT_SUPABASE_ANON_KEY
+            };
+        }
 
         const INITIAL_MARKETPLACES = [
             { id: "mp_shopee", platformKey: "shopee", label: "Shopee", url: "https://id.shp.ee/wC5bnNg7", categoryType: "marketplace", badgeText: "Official Store", colorHex: "#ee4d2d", iconClass: "fa-solid fa-bag-shopping", isActive: true },
@@ -2851,24 +2869,27 @@
         let lastKnownRemoteUpdatedAt = "";
         let isApplyingRemoteUpdate = false;
         let customerAutoSyncTimer = null;
+        let isUsingDefaultSeedCatalog = false;
 
         function sanitizeTimestampNow(ts) {
             const n = Number(ts) || 0;
             const now = Date.now();
-            if (n <= 0 || n > now + 60000) return now;
+            if (n <= 0 || n > now + 86400000) return now;
             return n;
         }
 
-        function updateAuditSyncStatusBar(stateText, cloudCount = null) {
-            const localEl = document.getElementById("audit-local-count");
-            const cloudEl = document.getElementById("audit-cloud-count");
-            const stateEl = document.getElementById("audit-sync-state");
-            if (localEl) localEl.textContent = `Lokal: ${products.length} Produk`;
-            if (cloudEl && cloudCount !== null) {
-                cloudEl.textContent = `Supabase: ${cloudCount} Produk`;
-            }
-            if (stateEl && stateText) {
-                stateEl.textContent = stateText;
+        function computeCatalogSignature(prodList, settingsObj) {
+            try {
+                const pSig = (Array.isArray(prodList) ? prodList : []).map(p =>
+                    `${p.id}|${p.name}|${p.basePrice}|${p.discountPercent}|${(p.photos && p.photos[0]) ? p.photos[0].slice(0, 80) : ""}|${(p.variations || []).length}`
+                ).join(";");
+                const mpSig = (Array.isArray(settingsObj?.marketplaces) ? settingsObj.marketplaces : []).map(m =>
+                    `${m.id}|${m.label}|${m.url}|${m.isActive}`
+                ).join(";");
+                const sSig = `${settingsObj?.storeName || ""}|${settingsObj?.heroTitle || ""}|${settingsObj?.backButtonUrl || ""}|${settingsObj?.darkMode}|${settingsObj?.batikMotif || ""}`;
+                return `${pSig}#${mpSig}#${sSig}`;
+            } catch (e) {
+                return String(Date.now());
             }
         }
 
@@ -2877,167 +2898,199 @@
                 const raw = localStorage.getItem("anugerah_pending_ops_v6");
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    return {
-                        upserts: parsed.upserts && typeof parsed.upserts === "object" ? parsed.upserts : {},
-                        deletes: Array.isArray(parsed.deletes) ? parsed.deletes : [],
-                        hasDirtyChanges: Boolean(parsed.hasDirtyChanges)
-                    };
+                    if (parsed && typeof parsed === "object") {
+                        return {
+                            upserts: parsed.upserts && typeof parsed.upserts === "object" ? parsed.upserts : {},
+                            deletes: Array.isArray(parsed.deletes) ? parsed.deletes : [],
+                            hasDirtyChanges: Boolean(parsed.hasDirtyChanges)
+                        };
+                    }
                 }
             } catch (e) {}
             return { upserts: {}, deletes: [], hasDirtyChanges: false };
         }
 
         function savePendingAdminOps(ops) {
-            try { localStorage.setItem("anugerah_pending_ops_v6", JSON.stringify(ops)); } catch (e) {}
+            try {
+                localStorage.setItem("anugerah_pending_ops_v6", JSON.stringify(ops));
+            } catch (e) {}
         }
 
-        function recordPendingAdminMutation(deltaHint = null) {
+        function recordPendingAdminMutation(deltaHint) {
             const ops = getPendingAdminOps();
             ops.hasDirtyChanges = true;
-            if (deltaHint) {
-                if (Array.isArray(deltaHint.upserted)) {
-                    deltaHint.upserted.forEach(p => {
-                        if (!p || !p.id) return;
-                        const compact = {
-                            ...p,
-                            photos: (p.photos || []).map((ph, i) => (typeof ph === "string" && ph.startsWith("data:") && ph.length > 25000 && i > 0) ? "" : ph).filter(Boolean)
-                        };
-                        if (!compact.photos || compact.photos.length === 0) compact.photos = [SVG_NAMETAG_SILVER_PLAT];
-                        ops.upserts[p.id] = compact;
+            if (deltaHint && Array.isArray(deltaHint.upserted)) {
+                deltaHint.upserted.forEach(p => {
+                    if (p && p.id) {
+                        ops.upserts[p.id] = p;
                         ops.deletes = ops.deletes.filter(id => id !== p.id);
-                    });
-                }
-                if (Array.isArray(deltaHint.deletedIds)) {
-                    deltaHint.deletedIds.forEach(id => {
-                        if (!id) return;
+                    }
+                });
+            }
+            if (deltaHint && Array.isArray(deltaHint.deletedIds)) {
+                deltaHint.deletedIds.forEach(id => {
+                    if (id) {
                         delete ops.upserts[id];
                         if (!ops.deletes.includes(id)) ops.deletes.push(id);
-                    });
-                }
+                    }
+                });
             }
             savePendingAdminOps(ops);
         }
 
+        function recordDeletedProductIds(ids) {
+            if (!Array.isArray(ids) || ids.length === 0) return;
+            const existing = Array.isArray(storeSettings.deletedProductIds) ? storeSettings.deletedProductIds : [];
+            const merged = Array.from(new Set([...existing, ...ids]));
+            storeSettings.deletedProductIds = merged.slice(-200);
+            recordPendingAdminMutation({ deletedIds: ids });
+        }
+
         function clearPendingAdminMutations() {
             try {
-                localStorage.setItem("anugerah_pending_ops_v6", JSON.stringify({
-                    upserts: {},
-                    deletes: [],
-                    hasDirtyChanges: false
-                }));
+                localStorage.removeItem("anugerah_pending_ops_v6");
             } catch (e) {}
         }
 
-        function applyPendingMutationsOntoList(remoteList) {
+        function applyPendingMutationsOntoList(baseList) {
+            const list = Array.isArray(baseList) ? JSON.parse(JSON.stringify(baseList)) : [];
             const ops = getPendingAdminOps();
-            const baseList = Array.isArray(remoteList) ? deepDecodeObjectStrings(remoteList) : [];
-            if (!ops.hasDirtyChanges) return baseList;
+            const deletedSet = new Set(ops.deletes || []);
+            const filtered = list.filter(p => p && p.id && !deletedSet.has(p.id));
+            const indexMap = new Map();
+            filtered.forEach((p, idx) => indexMap.set(p.id, idx));
 
-            const delSet = new Set(ops.deletes || []);
-            let filtered = baseList.filter(p => p && p.id && !delSet.has(p.id));
-
-            const upsertEntries = Object.values(ops.upserts || {});
-            upsertEntries.forEach(upItem => {
-                if (!upItem || !upItem.id || delSet.has(upItem.id)) return;
-                const existingIdx = filtered.findIndex(p => p.id === upItem.id);
-                const fullLocal = products.find(p => p.id === upItem.id) || upItem;
-                if (existingIdx !== -1) {
-                    filtered[existingIdx] = fullLocal;
+            Object.values(ops.upserts || {}).forEach(upProd => {
+                if (!upProd || !upProd.id || deletedSet.has(upProd.id)) return;
+                if (indexMap.has(upProd.id)) {
+                    filtered[indexMap.get(upProd.id)] = upProd;
                 } else {
-                    filtered.unshift(fullLocal);
+                    filtered.unshift(upProd);
                 }
             });
-            return filtered;
+            return deduplicateProductsList(filtered);
         }
 
         function deduplicateProductsList(list) {
             if (!Array.isArray(list)) return [];
             const seenIds = new Set();
-            const seenNames = new Set();
-            const uniqueList = [];
+            const result = [];
             for (const item of list) {
                 if (!item || !item.id) continue;
                 if (item.id === "p_copy_1794406651832_jwc4") continue;
-                const normName = String(item.name || "").trim().toLowerCase();
-                if (seenIds.has(item.id) || (normName && seenNames.has(normName))) {
+                if (seenIds.has(item.id)) continue;
+                seenIds.add(item.id);
+                result.push(item);
+            }
+            return result;
+        }
+
+        function cleanDuplicateProductsInCatalog() {
+            const seenNames = new Set();
+            const cleaned = [];
+            const removedIds = [];
+            for (const p of products) {
+                if (!p || !p.id) continue;
+                const normName = String(p.name || "").replace(/\s*\(salinan\)\s*/gi, "").trim().toLowerCase();
+                if (!normName || seenNames.has(normName)) {
+                    removedIds.push(p.id);
                     continue;
                 }
-                seenIds.add(item.id);
-                if (normName) seenNames.add(normName);
-                uniqueList.push(item);
+                seenNames.add(normName);
+                cleaned.push(p);
             }
-            return uniqueList;
-        }
-
-        async function cleanDuplicateProductsInCatalog() {
-            const beforeCount = products.length;
-            const cleaned = deduplicateProductsList(products);
-            const removedCount = beforeCount - cleaned.length;
+            if (removedIds.length === 0) {
+                showToast("Tidak ditemukan produk duplikat di katalog Anda.", "info");
+                return;
+            }
             products = cleaned;
-            recordPendingAdminMutation({ deletedIds: ["p_copy_1794406651832_jwc4"] });
-            await saveStateToStorage(true);
+            recordDeletedProductIds(removedIds);
+            saveStateToStorage(true, { deletedIds: removedIds });
             renderAllViews();
-            if (removedCount > 0) {
-                showToast(`🧹 Berhasil membersihkan ${removedCount} produk duplikat & menyinkronkan ke semua perangkat!`, "success");
-            } else {
-                showToast("✓ Katalog sudah bersih, tidak ditemukan produk duplikat.", "info");
-            }
+            showToast(`🧹 ${removedIds.length} produk duplikat berhasil dibersihkan & disinkronkan!`, "success");
         }
 
-        function recordDeletedProductIds(idsToDelete = []) {
-            recordPendingAdminMutation({ deletedIds: idsToDelete });
+        function createCompactProductsForLocalStorage(list) {
+            return (Array.isArray(list) ? list : []).map(p => ({
+                ...p,
+                photos: (Array.isArray(p.photos) ? p.photos : []).slice(0, 3).map(u =>
+                    (typeof u === "string" && u.startsWith("data:image/") && u.length > 15000) ? SVG_NAMETAG_SILVER_PLAT : u
+                )
+            }));
         }
 
-        function createCompactProductsForLocalStorage(prodList) {
-            return (prodList || []).map(p => {
-                const safePhotos = (p.photos || []).map((ph, idx) => {
-                    if (typeof ph === "string" && ph.startsWith("data:") && ph.length > 30000) {
-                        return idx === 0 ? ph.slice(0, 30000) : "";
-                    }
-                    return ph;
-                }).filter(Boolean);
-                return {
-                    ...p,
-                    photos: safePhotos.length > 0 ? safePhotos : [SVG_NAMETAG_SILVER_PLAT]
-                };
-            });
+        function updateAuditSyncStatusBar(statusText, cloudCount = null) {
+            const localEl = document.getElementById("audit-local-count");
+            const cloudEl = document.getElementById("audit-cloud-count");
+            const stateEl = document.getElementById("audit-sync-state");
+            if (localEl) localEl.textContent = `Lokal: ${products.length} Produk`;
+            if (cloudEl && cloudCount !== null) cloudEl.textContent = `Supabase: ${cloudCount} Produk`;
+            if (stateEl && statusText) stateEl.textContent = statusText;
+        }
+
+        function updateCloudSyncTimestampBadge(sourceLabel = "Supabase") {
+            const el = document.getElementById("cloud-last-sync-info");
+            if (!el) return;
+            const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+            el.textContent = `✓ Sinkron ${sourceLabel} (${timeStr})`;
         }
 
         async function loadStateFromStorage() {
             let embeddedData = null;
             try {
                 const stateEl = document.getElementById("anugerah-embedded-state");
-                if (stateEl && stateEl.textContent && stateEl.textContent.trim().length > 2) {
+                if (stateEl && stateEl.textContent && stateEl.textContent.trim().length > 4) {
                     embeddedData = JSON.parse(stateEl.textContent);
                 }
-            } catch (e) {}
-
-            let lsProducts = null;
-            let lsSettings = null;
-            try {
-                const rawLsProds = localStorage.getItem("anugerah_products_v2");
-                if (rawLsProds) lsProducts = JSON.parse(rawLsProds);
-            } catch (e) {}
-            try {
-                const rawLsSettings = localStorage.getItem("anugerah_settings_v2");
-                if (rawLsSettings) lsSettings = JSON.parse(rawLsSettings);
             } catch (e) {}
 
             let idbProducts = null;
             let idbSettings = null;
             let idbVault = null;
             try {
-                [idbProducts, idbSettings, idbVault] = await Promise.all([
-                    idbGetItem("anugerah_products_idb_v3"),
-                    idbGetItem("anugerah_settings_idb_v3"),
-                    idbGetItem("anugerah_products_vault_v4")
-                ]);
+                idbProducts = await idbGetItem("anugerah_products_idb_v3");
+                idbSettings = await idbGetItem("anugerah_settings_idb_v3");
+                idbVault = await idbGetItem("anugerah_products_vault_v4");
             } catch (e) {}
 
-            const lsTs = sanitizeTimestampNow(lsSettings?.lastUpdatedAt || 0);
+            let lsProducts = null;
+            let lsSettings = null;
+            try {
+                const rawP = localStorage.getItem("anugerah_products_v2");
+                if (rawP) lsProducts = JSON.parse(rawP);
+            } catch (e) {}
+            try {
+                const rawS = localStorage.getItem("anugerah_settings_v2");
+                if (rawS) lsSettings = JSON.parse(rawS);
+            } catch (e) {}
+            try {
+                const rawBuyer = localStorage.getItem("anugerah_buyer_draft_v2");
+                if (rawBuyer) buyerDraft = { ...buyerDraft, ...JSON.parse(rawBuyer) };
+            } catch (e) {}
+
             const idbTs = sanitizeTimestampNow(idbSettings?.lastUpdatedAt || 0);
+            const lsTs = sanitizeTimestampNow(lsSettings?.lastUpdatedAt || 0);
+
+            if (embeddedData && embeddedData.storeSettings) {
+                storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(embeddedData.storeSettings) };
+            }
+            if (lsSettings && typeof lsSettings === "object") {
+                storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(lsSettings) };
+            }
+            if (idbSettings && typeof idbSettings === "object" && idbTs >= lsTs) {
+                storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(idbSettings) };
+            }
+
+            const activeCreds = resolveActiveSupabaseCredentials();
+            storeSettings.supabaseUrl = activeCreds.url;
+            if (activeCreds.anonKey && activeCreds.anonKey.length > 80) {
+                storeSettings.supabaseAnonKey = activeCreds.anonKey;
+            }
+            storeSettings.lastUpdatedAt = sanitizeTimestampNow(storeSettings.lastUpdatedAt);
+            ensureMarketplacesInitialized();
 
             let baseProducts = null;
+            isUsingDefaultSeedCatalog = false;
             if (Array.isArray(idbProducts) && idbProducts.length > 0 && idbTs >= lsTs) {
                 baseProducts = idbProducts;
             } else if (Array.isArray(lsProducts) && lsProducts.length > 0) {
@@ -3050,58 +3103,20 @@
                 baseProducts = embeddedData.products;
             } else {
                 baseProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+                isUsingDefaultSeedCatalog = true;
             }
 
             products = applyPendingMutationsOntoList(baseProducts);
 
-            if (Array.isArray(products) && products.length > 0) {
+            if (!isUsingDefaultSeedCatalog && Array.isArray(products) && products.length > 0) {
                 idbSetItem("anugerah_products_vault_v4", {
                     products,
                     updatedAt: Date.now()
                 });
             }
 
-            try {
-                const embeddedBackUrl = normalizeBackUrl(embeddedData?.storeSettings?.backButtonUrl || "");
-                const dedicatedSavedBackUrl = normalizeBackUrl(localStorage.getItem("anugerah_back_url_v3") || "");
-
-                if (embeddedData && embeddedData.storeSettings) {
-                    storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(embeddedData.storeSettings) };
-                }
-                if (lsSettings && idbSettings) {
-                    const newerSettings = idbTs >= lsTs ? idbSettings : lsSettings;
-                    const olderSettings = idbTs >= lsTs ? lsSettings : idbSettings;
-                    storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(olderSettings), ...deepDecodeObjectStrings(newerSettings) };
-                } else if (idbSettings) {
-                    storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(idbSettings) };
-                } else if (lsSettings) {
-                    storeSettings = { ...storeSettings, ...deepDecodeObjectStrings(lsSettings) };
-                }
-
-                // Pastikan kredensial internal FRONTEND_SUPABASE_CONFIG selalu menjadi prioritas utama
-                storeSettings.supabaseUrl = FRONTEND_SUPABASE_CONFIG.url || storeSettings.supabaseUrl || DEFAULT_SUPABASE_URL;
-                if (FRONTEND_SUPABASE_CONFIG.anonKey && FRONTEND_SUPABASE_CONFIG.anonKey.length > 80) {
-                    storeSettings.supabaseAnonKey = FRONTEND_SUPABASE_CONFIG.anonKey;
-                }
-
-                storeSettings.lastUpdatedAt = sanitizeTimestampNow(storeSettings.lastUpdatedAt);
-                const resolvedBackUrl = dedicatedSavedBackUrl || normalizeBackUrl(storeSettings.backButtonUrl) || embeddedBackUrl || "";
-                storeSettings.backButtonUrl = resolvedBackUrl;
-                if (!Array.isArray(storeSettings.marketplaces) || storeSettings.marketplaces.length === 0) {
-                    storeSettings.marketplaces = JSON.parse(JSON.stringify(INITIAL_MARKETPLACES));
-                }
-                storeSettings = deepDecodeObjectStrings(storeSettings);
-            } catch (e) {}
-
-            try {
-                const savedDraft = localStorage.getItem("anugerah_buyer_draft_v2");
-                if (savedDraft) {
-                    buyerDraft = { ...buyerDraft, ...deepDecodeObjectStrings(JSON.parse(savedDraft)) };
-                }
-            } catch (e) {}
-
             isInitialStorageLoaded = true;
-            updateAuditSyncStatusBar("Data lokal dimuat", null);
+            updateAuditSyncStatusBar("Memuat data lokal...", null);
         }
 
         async function saveStateToStorage(broadcastNow = true, deltaHint = null) {
@@ -3109,327 +3124,86 @@
                 const now = Date.now();
                 storeSettings.lastUpdatedAt = now;
                 lastExplicitAdminWriteTime = now;
+                isUsingDefaultSeedCatalog = false;
                 recordPendingAdminMutation(deltaHint);
             }
             storeSettings.catalogSignature = computeCatalogSignature(products, storeSettings);
 
-            idbSetItem("anugerah_products_idb_v3", products);
-            idbSetItem("anugerah_settings_idb_v3", storeSettings);
+            if (!isUsingDefaultSeedCatalog) {
+                idbSetItem("anugerah_products_idb_v3", products);
+                idbSetItem("anugerah_settings_idb_v3", storeSettings);
+            }
 
-            if (Array.isArray(products) && products.length > 0) {
+            if (!isUsingDefaultSeedCatalog && Array.isArray(products) && products.length > 0) {
                 idbSetItem("anugerah_products_vault_v4", {
                     products: JSON.parse(JSON.stringify(products)),
                     updatedAt: storeSettings.lastUpdatedAt || Date.now()
                 });
             }
 
-            try { localStorage.setItem("anugerah_settings_v2", JSON.stringify(storeSettings)); } catch (e) {}
-            try {
-                localStorage.setItem("anugerah_products_v2", JSON.stringify(products));
-            } catch (quotaErr) {
+            if (!isUsingDefaultSeedCatalog) {
+                try { localStorage.setItem("anugerah_settings_v2", JSON.stringify(storeSettings)); } catch (e) {}
                 try {
-                    localStorage.setItem("anugerah_products_v2", JSON.stringify(createCompactProductsForLocalStorage(products)));
-                } catch (e2) {}
+                    localStorage.setItem("anugerah_products_v2", JSON.stringify(products));
+                } catch (quotaErr) {
+                    try {
+                        localStorage.setItem("anugerah_products_v2", JSON.stringify(createCompactProductsForLocalStorage(products)));
+                    } catch (e2) {}
+                }
             }
 
             syncEmbeddedStateTag();
-            updateAuditSyncStatusBar(broadcastNow ? "⏳ Menyimpan perubahan ke Supabase..." : null, null);
+            updateAuditSyncStatusBar(broadcastNow ? "Menyimpan perubahan..." : "Tersimpan lokal", null);
 
-            if (broadcastNow) {
-                if (localBroadcastChannel) {
-                    try {
-                        localBroadcastChannel.postMessage({
-                            products,
-                            storeSettings,
-                            updatedAt: storeSettings.lastUpdatedAt
-                        });
-                    } catch (err) {}
-                }
+            if (broadcastNow && localBroadcastChannel) {
+                try {
+                    localBroadcastChannel.postMessage({
+                        type: "catalog_updated",
+                        products,
+                        storeSettings
+                    });
+                } catch (e) {}
+            }
+
+            if (broadcastNow && supabaseClient) {
                 return await pushRealtimeSnapshotToSupabase();
             }
             return true;
         }
 
         async function restoreFromAutoVault() {
-            try {
-                const vault = await idbGetItem("anugerah_products_vault_v4");
-                if (vault && Array.isArray(vault.products) && vault.products.length > 0) {
-                    products = deepDecodeObjectStrings(vault.products);
-                } else {
-                    products = deepDecodeObjectStrings(JSON.parse(JSON.stringify(INITIAL_PRODUCTS)));
-                }
-                await saveStateToStorage(true);
-                renderAllViews();
-                showToast(`🛡️ Berhasil memulihkan ${products.length} produk katalog & menyinkronkan ke Supabase!`, "success");
-            } catch (e) {
-                products = deepDecodeObjectStrings(JSON.parse(JSON.stringify(INITIAL_PRODUCTS)));
-                await saveStateToStorage(true);
-                renderAllViews();
-                showToast(`🛡️ Berhasil memulihkan ${products.length} produk katalog!`, "success");
+            const vault = await idbGetItem("anugerah_products_vault_v4");
+            if (!vault || !Array.isArray(vault.products) || vault.products.length === 0) {
+                showToast("Brankas cadangan otomatis (Auto-Vault) belum memiliki data tersimpan.", "info");
+                return;
             }
-        }
-
-        if (localBroadcastChannel) {
-            localBroadcastChannel.onmessage = (ev) => {
-                if (ev && ev.data) {
-                    applyIncomingRealtimePayload(ev.data, false);
-                }
-            };
-        }
-
-        // Shortcut Rahasia Admin: Ctrl + Shift
-        window.addEventListener("keydown", (e) => {
-            if (e.ctrlKey && e.shiftKey && (e.key === "Shift" || e.key === "Control" || e.key === "A" || e.key === "a")) {
-                const tag = (document.activeElement?.tagName || "").toUpperCase();
-                if (tag !== "INPUT" && tag !== "TEXTAREA") {
-                    e.preventDefault();
-                    requestAdminAccess();
-                }
-            }
-        });
-
-        function computeCatalogSignature(prods, settingsObj) {
-            try {
-                const list = Array.isArray(prods) ? prods : [];
-                let h = 2166136261 ^ list.length;
-                for (let i = 0; i < list.length; i++) {
-                    const p = list[i];
-                    const firstPhoto = (p.photos && p.photos[0]) ? String(p.photos[0]).slice(0, 64) : "";
-                    const token = `${p.id}|${p.name}|${p.basePrice}|${p.discountPercent}|${(p.photos || []).length}|${firstPhoto}|${p.isPromo ? 1 : 0}|${p.isBestseller ? 1 : 0}`;
-                    for (let j = 0; j < token.length; j++) {
-                        h ^= token.charCodeAt(j);
-                        h = Math.imul(h, 16777619);
-                    }
-                }
-                const sPart = settingsObj
-                    ? `${settingsObj.storeName}:${settingsObj.waNumber}:${settingsObj.backButtonUrl}:${settingsObj.photoFrameColor}:${settingsObj.batikMotif}:${settingsObj.darkMode}:${settingsObj.heroTitle}:${settingsObj.heroSubtitle}:${JSON.stringify(settingsObj.marketplaces || [])}`
-                    : "";
-                for (let k = 0; k < sPart.length; k++) {
-                    h ^= sPart.charCodeAt(k);
-                    h = Math.imul(h, 16777619);
-                }
-                return "sig_" + (h >>> 0).toString(16) + "_" + list.length;
-            } catch (e) {
-                return "sig_" + Date.now();
-            }
-        }
-
-        function updateCloudSyncTimestampBadge(sourceLabel = "Supabase") {
-            const el = document.getElementById("cloud-last-sync-info");
-            const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-            if (el) {
-                el.textContent = `✓ Tersinkron (${sourceLabel} • ${products.length} Produk • ${timeStr})`;
-            }
-            updateAuditSyncStatusBar(`✅ Sinkron (${sourceLabel} • ${timeStr})`, products.length);
-        }
-
-        function convertLegacyBackupPayloadToState(rawPayload) {
-            if (!rawPayload || typeof rawPayload !== "object") return null;
-
-            if (Array.isArray(rawPayload.products)) {
-                return {
-                    products: deepDecodeObjectStrings(rawPayload.products),
-                    storeSettings: rawPayload.storeSettings ? deepDecodeObjectStrings(rawPayload.storeSettings) : null,
-                    updatedAt: Number(rawPayload.updatedAt || rawPayload.storeSettings?.lastUpdatedAt || 0)
-                };
-            }
-
-            const settingsMap = {};
-            if (Array.isArray(rawPayload.Settings)) {
-                rawPayload.Settings.forEach(row => {
-                    if (row && row.key) settingsMap[row.key] = row.value;
-                });
-            }
-
-            let parsedSettings = null;
-            if (Object.keys(settingsMap).length > 0) {
-                parsedSettings = {};
-                if (settingsMap.shop_name) parsedSettings.storeName = settingsMap.shop_name;
-                if (settingsMap.admin_username) parsedSettings.adminUsername = settingsMap.admin_username;
-                if (settingsMap.wa_number) parsedSettings.waNumber = String(settingsMap.wa_number);
-                if (settingsMap.workshop_address) parsedSettings.storeAddress = settingsMap.workshop_address;
-                if (settingsMap.back_button_url !== undefined) parsedSettings.backButtonUrl = normalizeBackUrl(settingsMap.back_button_url);
-                if (settingsMap.back_button_label !== undefined) parsedSettings.backButtonLabel = settingsMap.back_button_label;
-                if (settingsMap.photo_frame_color) parsedSettings.photoFrameColor = settingsMap.photo_frame_color;
-                if (settingsMap.lynk_url) parsedSettings.digitalLink = settingsMap.lynk_url;
-                if (settingsMap.dark_mode !== undefined) parsedSettings.darkMode = String(settingsMap.dark_mode) === "true";
-                if (settingsMap.last_updated_at) parsedSettings.lastUpdatedAt = sanitizeTimestampNow(settingsMap.last_updated_at);
-                if (settingsMap.store_settings_json) {
-                    try {
-                        const extraSettings = JSON.parse(settingsMap.store_settings_json);
-                        delete extraSettings.supabaseUrl;
-                        delete extraSettings.supabaseAnonKey;
-                        delete extraSettings.customGasUrl;
-                        parsedSettings = { ...parsedSettings, ...extraSettings };
-                    } catch (e) {}
-                }
-
-                const mpBase = JSON.parse(JSON.stringify(INITIAL_MARKETPLACES));
-                const mpKeyMap = {
-                    mp_shopee: ["shopee_url", "shopee_label"],
-                    mp_tokopedia: ["tokopedia_url", "tokopedia_label"],
-                    mp_tiktok_shop: ["tiktok_shop_url", "tiktok_shop_label"],
-                    mp_lazada: ["lazada_url", "lazada_label"],
-                    mp_blibli: ["blibli_url", "blibli_label"],
-                    mp_toco: ["toco_url", "toco_label"],
-                    mp_lynk: ["lynk_url", "lynk_label"],
-                    soc_instagram: ["ig_url", "ig_label"],
-                    soc_facebook: ["fb_url", "fb_label"],
-                    soc_tiktok: ["tiktok_url", "tiktok_label"],
-                    soc_youtube: ["yt_url", "yt_label"]
-                };
-                mpBase.forEach(item => {
-                    const keys = mpKeyMap[item.id];
-                    if (keys) {
-                        if (settingsMap[keys[0]]) item.url = String(settingsMap[keys[0]]).trim();
-                        if (settingsMap[keys[1]]) item.label = String(settingsMap[keys[1]]).trim();
-                    }
-                });
-                if (!parsedSettings.marketplaces || !Array.isArray(parsedSettings.marketplaces) || parsedSettings.marketplaces.length === 0) {
-                    parsedSettings.marketplaces = mpBase;
-                }
-            }
-
-            let parsedProducts = null;
-            if (Array.isArray(rawPayload.Products)) {
-                parsedProducts = rawPayload.Products.map((p, idx) => {
-                    let photos = [];
-                    if (Array.isArray(p.photos)) {
-                        photos = p.photos;
-                    } else if (typeof p.imagesJson === "string" && p.imagesJson.trim()) {
-                        try { photos = JSON.parse(p.imagesJson); } catch (e) {}
-                    }
-                    if (!Array.isArray(photos) || photos.length === 0) {
-                        photos = [SVG_NAMETAG_SILVER_PLAT];
-                    }
-
-                    let variations = [];
-                    if (Array.isArray(p.variations) && p.variations.length > 0) {
-                        variations = p.variations;
-                    } else if (typeof p.variantGroupsJson === "string" && p.variantGroupsJson.trim()) {
-                        try {
-                            const vGroups = JSON.parse(p.variantGroupsJson);
-                            if (Array.isArray(vGroups) && vGroups.length > 0) {
-                                variations = vGroups.map(g => ({
-                                    groupName: g.groupName || g.name || "PILIHAN VARIASI",
-                                    options: (g.options || []).map(o => ({
-                                        name: o.name || "Opsi",
-                                        price: Number(o.price !== undefined ? o.price : o.priceAdd) || 0
-                                    }))
-                                }));
-                            }
-                        } catch (e) {}
-                    }
-
-                    let wholesaleTiers = [];
-                    if (Array.isArray(p.wholesaleTiers)) {
-                        wholesaleTiers = p.wholesaleTiers;
-                    } else if (typeof p.wholesaleTiersJson === "string" && p.wholesaleTiersJson.trim()) {
-                        try {
-                            const rawTiers = JSON.parse(p.wholesaleTiersJson);
-                            if (Array.isArray(rawTiers)) {
-                                wholesaleTiers = rawTiers.map(t => ({
-                                    minQty: Number(t.minQty) || 5,
-                                    discountPercent: Number(t.discountPercent !== undefined ? t.discountPercent : t.price) || 5
-                                }));
-                            }
-                        } catch (e) {}
-                    }
-
-                    let basePrice = Number(p.basePrice !== undefined ? p.basePrice : p.priceMin) || 0;
-                    if (basePrice <= 0 && variations.length > 0 && variations[0].options && variations[0].options.length > 0) {
-                        const optPrices = variations[0].options.map(o => Number(o.price) || 0).filter(v => v > 0);
-                        if (optPrices.length > 0) basePrice = Math.min(...optPrices);
-                    }
-                    if (basePrice <= 0) basePrice = 25000;
-
-                    const soldCount = Number(p.soldCount) || 250;
-                    const soldLabel = p.soldLabel || (soldCount >= 1000 ? `${(soldCount / 1000).toFixed(soldCount % 1000 === 0 ? 0 : 1).replace('.', ',')}RB+ Terjual` : `${soldCount} Terjual`);
-
-                    return {
-                        id: p.id || ("prod_" + idx),
-                        name: p.name || "Produk Cetak",
-                        category: p.category || "NAMETAG",
-                        basePrice,
-                        discountPercent: Number(p.discountPercent !== undefined ? p.discountPercent : p.discount) || 0,
-                        soldCount,
-                        soldLabel,
-                        rating: Number(p.rating) || 5,
-                        description: p.description || "",
-                        isPromo: String(p.isPromo) === "true" || p.isPromo === true,
-                        isBestseller: String(p.isBestSeller !== undefined ? p.isBestSeller : p.isBestseller) === "true" || p.isBestseller === true,
-                        isPreorder: String(p.isPreOrder !== undefined ? p.isPreOrder : p.isPreorder) === "true" || p.isPreorder === true,
-                        poDays: Number(p.poDays) || 0,
-                        hasVariations: String(p.hasVariant !== undefined ? p.hasVariant : p.hasVariations) === "true" || variations.length > 0,
-                        variations,
-                        wholesaleTiers,
-                        photos,
-                        marketplaceLinks: (p.marketplaceLinks && typeof p.marketplaceLinks === "object") ? p.marketplaceLinks : {},
-                        videoUrl: p.videoUrl || "",
-                        cardStyle: p.cardStyle || "standard"
-                    };
-                });
-            }
-
-            return {
-                products: parsedProducts ? deepDecodeObjectStrings(parsedProducts) : null,
-                storeSettings: parsedSettings ? deepDecodeObjectStrings(parsedSettings) : null,
-                updatedAt: sanitizeTimestampNow(settingsMap.last_updated_at || 0)
-            };
-        }
-
-        function buildBackupExportPayload() {
-            return {
-                app: "ANUGERAH_ART_WEBAPP_BUILDER_SUPABASE",
-                exportedAt: new Date().toISOString(),
-                updatedAt: storeSettings.lastUpdatedAt || Date.now(),
-                storeSettings: {
-                    ...storeSettings,
-                    supabaseUrl: undefined,
-                    supabaseAnonKey: undefined
-                },
-                products,
-                marketplaces: storeSettings.marketplaces || []
-            };
-        }
-
-        function isCanvasSandboxEnvironment() {
-            const host = (window.location && window.location.hostname) || "";
-            return (
-                window.location.protocol === "blob:" ||
-                window.location.protocol === "data:" ||
-                host === "" ||
-                host.includes("googleusercontent.com") ||
-                host.includes("scf.usercontent.goog") ||
-                host.includes("webcontainer")
-            );
+            products = deduplicateProductsList(vault.products);
+            isUsingDefaultSeedCatalog = false;
+            await saveStateToStorage(true, { upserted: products });
+            renderAllViews();
+            showToast(`🛡️ Berhasil memulihkan ${products.length} produk dari Brankas Cadangan Otomatis!`, "success");
         }
 
         async function uploadFileToSupabaseStorage(file, folder = "photos") {
-            const autoSaveCdn = document.getElementById("auto-save-supabase-cdn")?.checked !== false;
-            if (!supabaseClient || !autoSaveCdn || !file) return null;
+            const autoSaveCdn = document.getElementById("auto-save-supabase-cdn");
+            if ((autoSaveCdn && !autoSaveCdn.checked) || !supabaseClient || !file) return null;
             try {
                 const compressed = await compressImageFileToWebP(file, 1200, 0.85);
-                const uploadBlob = compressed.blob || file;
+                const uploadBody = compressed.blob || file;
                 const safeName = `${folder}/prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.webp`;
                 const { error } = await supabaseClient.storage
                     .from("product-images")
-                    .upload(safeName, uploadBlob, { contentType: "image/webp", cacheControl: "31536000", upsert: true });
+                    .upload(safeName, uploadBody, {
+                        contentType: "image/webp",
+                        cacheControl: "31536000",
+                        upsert: true
+                    });
                 if (!error) {
                     const { data } = supabaseClient.storage.from("product-images").getPublicUrl(safeName);
                     if (data && data.publicUrl) return data.publicUrl;
                 }
-                const { error: err2 } = await supabaseClient.storage
-                    .from("anugerah-media")
-                    .upload(safeName, uploadBlob, { contentType: "image/webp", cacheControl: "31536000", upsert: true });
-                if (!err2) {
-                    const { data: d2 } = supabaseClient.storage.from("anugerah-media").getPublicUrl(safeName);
-                    if (d2 && d2.publicUrl) return d2.publicUrl;
-                }
-                return null;
-            } catch (err) {
-                return null;
-            }
+            } catch (e) {}
+            return null;
         }
 
         async function recordOrderToSupabaseBackend(invoiceNo, buyerName, buyerPhone, buyerAddress, buyerNote, items, totalPrice) {
@@ -3447,126 +3221,185 @@
             } catch (e) {}
         }
 
-        async function autoPullFromSupabaseOnBoot(silent = true, checkMetaOnlyFirst = false) {
-            if (!isInitialStorageLoaded || isCloudWriteInProgress || !supabaseClient) return;
+        function normalizeSupabaseProductRow(r) {
+            if (!r || typeof r !== "object") return null;
+            if (r.basePrice !== undefined && Array.isArray(r.photos)) return r;
+            const soldCount = Number(r.sold_count ?? r.soldCount) || 250;
+            return {
+                id: r.id,
+                name: r.name || "Produk Cetak",
+                category: r.category || "NAMETAG",
+                basePrice: Number(r.base_price ?? r.basePrice) || 25000,
+                discountPercent: Number(r.discount_percent ?? r.discountPercent) || 0,
+                soldCount,
+                soldLabel: r.sold_label || r.soldLabel || (soldCount >= 1000 ? `${Math.round(soldCount / 1000)}RB+ Terjual` : `${soldCount} Terjual`),
+                rating: Number(r.rating) || 5,
+                description: r.description || "",
+                isPromo: Boolean(r.is_promo ?? r.isPromo),
+                isBestseller: Boolean(r.is_bestseller ?? r.isBestseller),
+                isPreorder: Boolean(r.is_preorder ?? r.isPreorder),
+                poDays: Number(r.po_days ?? r.poDays) || 0,
+                hasVariations: Boolean(r.has_variations ?? r.hasVariations),
+                variations: Array.isArray(r.variations) ? r.variations : [],
+                wholesaleTiers: Array.isArray(r.wholesale_tiers ?? r.wholesaleTiers) ? (r.wholesale_tiers ?? r.wholesaleTiers) : [],
+                photos: Array.isArray(r.photos) && r.photos.length > 0 ? r.photos : [SVG_NAMETAG_SILVER_PLAT],
+                marketplaceLinks: (r.marketplace_links ?? r.marketplaceLinks) || {},
+                videoUrl: r.video_url || r.videoUrl || "",
+                cardStyle: r.card_style || r.cardStyle || "standard"
+            };
+        }
 
-            if (silent && lastExplicitAdminWriteTime > 0 && (Date.now() - lastExplicitAdminWriteTime < 6000)) {
-                return;
+        async function pushRealtimeSnapshotToSupabase() {
+            if (!supabaseClient) return false;
+            isCloudWriteInProgress = true;
+            try {
+                const cleanSettings = { ...storeSettings };
+                delete cleanSettings.supabaseAnonKey;
+                const cleanMarketplaces = ensureMarketplacesInitialized();
+
+                let pushedOk = false;
+                const { data: rpcRes, error: rpcErr } = await supabaseClient.rpc("sync_anugerah_store_atomic", {
+                    p_products: products,
+                    p_settings: cleanSettings,
+                    p_allow_empty: products.length === 0,
+                    p_marketplaces: cleanMarketplaces
+                });
+
+                if (!rpcErr) {
+                    pushedOk = true;
+                    if (rpcRes && rpcRes.updated_at) {
+                        lastKnownRemoteUpdatedAt = rpcRes.updated_at;
+                    }
+                } else {
+                    const { error: upsertErr } = await supabaseClient
+                        .from("anugerah_cloud_store")
+                        .upsert({
+                            id: "main_store_data",
+                            products,
+                            marketplaces: cleanMarketplaces,
+                            store_settings: cleanSettings,
+                            updated_at: new Date().toISOString()
+                        }, { onConflict: "id" });
+                    pushedOk = !upsertErr;
+                }
+
+                if (pushedOk) {
+                    clearPendingAdminMutations();
+                    updateAuditSyncStatusBar("✅ Tersimpan & Sinkron di Supabase", products.length);
+                    updateCloudSyncTimestampBadge("Supabase");
+                    if (realtimeChannel && !isCanvasSandboxEnvironment()) {
+                        try {
+                            await realtimeChannel.send({
+                                type: "broadcast",
+                                event: "catalog_updated",
+                                payload: { products, storeSettings: cleanSettings }
+                            });
+                        } catch (e) {}
+                    }
+                } else {
+                    updateAuditSyncStatusBar("⚠️ Gagal menulis ke Supabase (Cek SQL Backend)", null);
+                }
+                return pushedOk;
+            } catch (err) {
+                updateAuditSyncStatusBar("⚠️ Error Sinkronisasi Supabase", null);
+                return false;
+            } finally {
+                isCloudWriteInProgress = false;
             }
+        }
+
+        function applyIncomingRealtimePayload(payload, showNotif = false) {
+            if (!payload || typeof payload !== "object") return;
+            isApplyingRemoteUpdate = true;
+            try {
+                if (Array.isArray(payload.products) && payload.products.length > 0) {
+                    isUsingDefaultSeedCatalog = false;
+                    products = applyPendingMutationsOntoList(payload.products.map(normalizeSupabaseProductRow).filter(Boolean));
+                }
+                if (payload.storeSettings && typeof payload.storeSettings === "object" && Object.keys(payload.storeSettings).length > 0) {
+                    const decodedRemote = deepDecodeObjectStrings(payload.storeSettings);
+                    const prevBackUrl = normalizeBackUrl(storeSettings.backButtonUrl);
+                    const nextBackUrl = normalizeBackUrl(decodedRemote.backButtonUrl);
+                    const activeCreds = resolveActiveSupabaseCredentials();
+                    storeSettings = {
+                        ...storeSettings,
+                        ...decodedRemote,
+                        supabaseUrl: activeCreds.url,
+                        supabaseAnonKey: activeCreds.anonKey,
+                        backButtonUrl: decodedRemote.backButtonUrl !== undefined ? nextBackUrl : prevBackUrl
+                    };
+                }
+                ensureMarketplacesInitialized();
+                saveStateToStorage(false);
+                applySettingsToDOM();
+                renderAllViews();
+                if (showNotif) {
+                    showToast(`☁️ Katalog diperbarui secara realtime (${products.length} produk)!`, "info");
+                }
+            } finally {
+                isApplyingRemoteUpdate = false;
+            }
+        }
+
+        async function autoPullFromSupabaseOnBoot(silent = true, metaCheckOnly = false) {
+            if (!supabaseClient || isCloudWriteInProgress || isApplyingRemoteUpdate) return;
+            if (Date.now() - lastExplicitAdminWriteTime < 2500) return;
 
             try {
-                if (checkMetaOnlyFirst && lastKnownRemoteUpdatedAt) {
-                    const { data: metaRow, error: metaErr } = await supabaseClient
-                        .from("anugerah_cloud_store")
-                        .select("updated_at")
-                        .eq("id", "main_store_data")
-                        .maybeSingle();
-
-                    if (!metaErr && metaRow && metaRow.updated_at === lastKnownRemoteUpdatedAt) {
+                if (metaCheckOnly && lastKnownRemoteUpdatedAt) {
+                    const { data: meta } = await supabaseClient.rpc("get_catalog_sync_meta");
+                    if (meta && meta.updated_at && meta.updated_at === lastKnownRemoteUpdatedAt) {
                         return;
                     }
                 }
 
-                const [cloudStoreRes, relProductsRes, stRowRes, mpRowsRes] = await Promise.all([
-                    supabaseClient.from("anugerah_cloud_store").select("*").eq("id", "main_store_data").maybeSingle(),
-                    supabaseClient.from("products").select("*").limit(5000),
-                    supabaseClient.from("store_settings").select("*").eq("id", "main_config").maybeSingle(),
-                    supabaseClient.from("marketplaces").select("*").order("sort_order", { ascending: true })
-                ]);
+                const { data: storeRow, error: storeErr } = await supabaseClient
+                    .from("anugerah_cloud_store")
+                    .select("products, marketplaces, store_settings, updated_at")
+                    .eq("id", "main_store_data")
+                    .maybeSingle();
 
-                if (cloudStoreRes.error && relProductsRes.error) {
-                    updateAuditSyncStatusBar("⚠️ Jalankan SQL Backend Supabase terlebih dahulu", null);
+                if (storeErr) {
+                    updateAuditSyncStatusBar("⚠️ Tabel Supabase belum siap (Jalankan SQL Backend)", null);
                     return;
                 }
 
-                const data = cloudStoreRes?.data;
-                const pRows = relProductsRes?.data;
-                const stRow = stRowRes?.data;
-                const mpRows = mpRowsRes?.data;
-
-                if (data && data.updated_at) {
-                    lastKnownRemoteUpdatedAt = data.updated_at;
+                let remoteCloudProducts = (storeRow && Array.isArray(storeRow.products)) ? storeRow.products : [];
+                let remoteSettings = (storeRow && storeRow.store_settings && typeof storeRow.store_settings === "object") ? { ...storeRow.store_settings } : {};
+                if (storeRow && Array.isArray(storeRow.marketplaces) && storeRow.marketplaces.length > 0) {
+                    remoteSettings.marketplaces = storeRow.marketplaces;
+                }
+                if (storeRow && storeRow.updated_at) {
+                    lastKnownRemoteUpdatedAt = storeRow.updated_at;
                 }
 
-                const relationalBackUrl = stRow && stRow.back_button_url ? normalizeBackUrl(stRow.back_button_url) : "";
-
-                let remoteMarketplaces = null;
-                if (data && Array.isArray(data.marketplaces) && data.marketplaces.length > 0) {
-                    remoteMarketplaces = data.marketplaces;
-                } else if (stRow && Array.isArray(stRow.marketplaces) && stRow.marketplaces.length > 0) {
-                    remoteMarketplaces = stRow.marketplaces;
-                } else if (Array.isArray(mpRows) && mpRows.length > 0) {
-                    remoteMarketplaces = mpRows.map(m => ({
-                        id: m.id,
-                        platformKey: m.platform_key || "custom",
-                        label: m.label || "Marketplace",
-                        url: m.url || "",
-                        categoryType: m.category_type || "marketplace",
-                        badgeText: m.badge_text || "",
-                        colorHex: m.color_hex || "#f59e0b",
-                        iconClass: m.icon_class || "fa-solid fa-store",
-                        isActive: m.is_active !== false
-                    }));
+                let relationalBackUrl = "";
+                if (!remoteCloudProducts || remoteCloudProducts.length === 0) {
+                    const { data: relProds } = await supabaseClient.from("products").select("*");
+                    if (Array.isArray(relProds) && relProds.length > 0) {
+                        remoteCloudProducts = relProds.map(normalizeSupabaseProductRow).filter(Boolean);
+                    }
                 }
 
-                let remoteCloudProducts = null;
-                if (data && Array.isArray(data.products) && data.products.length > 0) {
-                    remoteCloudProducts = data.products;
-                } else if (Array.isArray(pRows) && pRows.length > 0) {
-                    const sortedRows = [...pRows].sort((a, b) => {
-                        const sa = Number(a.sort_order ?? 999999);
-                        const sb = Number(b.sort_order ?? 999999);
-                        if (sa !== sb) return sa - sb;
-                        return String(b.updated_at || "").localeCompare(String(a.updated_at || ""));
-                    });
-                    remoteCloudProducts = sortedRows.map(r => ({
-                        id: r.id,
-                        name: r.name,
-                        category: r.category || "NAMETAG",
-                        basePrice: Number(r.base_price !== undefined ? r.base_price : r.priceMin) || 25000,
-                        discountPercent: Number(r.discount_percent !== undefined ? r.discount_percent : r.discount) || 0,
-                        soldCount: Number(r.sold_count !== undefined ? r.sold_count : r.soldCount) || 250,
-                        soldLabel: r.sold_label || "250 Terjual",
-                        rating: Number(r.rating) || 5,
-                        description: r.description || "",
-                        isPromo: !!(r.is_promo !== undefined ? r.is_promo : r.isPromo),
-                        isBestseller: !!(r.is_bestseller !== undefined ? r.is_bestseller : r.isBestSeller),
-                        isPreorder: !!(r.is_preorder !== undefined ? r.is_preorder : r.isPreOrder),
-                        poDays: Number(r.po_days !== undefined ? r.po_days : r.poDays) || 0,
-                        hasVariations: !!(r.has_variations !== undefined ? r.has_variations : r.hasVariant),
-                        variations: Array.isArray(r.variations) ? r.variations : [],
-                        wholesaleTiers: Array.isArray(r.wholesale_tiers) ? r.wholesale_tiers : [],
-                        photos: Array.isArray(r.photos) ? r.photos : [],
-                        marketplaceLinks: (r.marketplace_links && typeof r.marketplace_links === "object") ? r.marketplace_links : {},
-                        videoUrl: r.video_url || r.videoUrl || "",
-                        cardStyle: r.card_style || "standard"
-                    }));
-                }
-
-                const remoteSettings = (data && data.store_settings && Object.keys(data.store_settings).length > 0)
-                    ? data.store_settings
-                    : (stRow && stRow.raw_settings ? stRow.raw_settings : {});
-                if (Array.isArray(remoteMarketplaces) && remoteMarketplaces.length > 0) {
-                    remoteSettings.marketplaces = remoteMarketplaces;
-                }
-
-                if ((!remoteCloudProducts || remoteCloudProducts.length === 0) && products.length > 0) {
+                if ((!remoteCloudProducts || remoteCloudProducts.length === 0) && products.length > 0 && !isUsingDefaultSeedCatalog) {
                     await pushRealtimeSnapshotToSupabase();
                     updateAuditSyncStatusBar("✅ Inisialisasi awal ke Supabase selesai", products.length);
                     return;
                 }
 
                 if (Array.isArray(remoteCloudProducts) && remoteCloudProducts.length > 0) {
+                    isUsingDefaultSeedCatalog = false;
                     const pendingOps = getPendingAdminOps();
-                    const synchronizedProducts = applyPendingMutationsOntoList(remoteCloudProducts);
+                    const synchronizedProducts = applyPendingMutationsOntoList(remoteCloudProducts.map(normalizeSupabaseProductRow).filter(Boolean));
 
                     const existingBackUrl = normalizeBackUrl(localStorage.getItem("anugerah_back_url_v3") || storeSettings.backButtonUrl);
                     const remoteBackUrl = normalizeBackUrl(remoteSettings.backButtonUrl) || relationalBackUrl;
+                    const activeCreds = resolveActiveSupabaseCredentials();
                     const mergedSettings = {
                         ...storeSettings,
                         ...remoteSettings,
-                        supabaseUrl: FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL,
-                        supabaseAnonKey: FRONTEND_SUPABASE_CONFIG.anonKey || DEFAULT_SUPABASE_ANON_KEY,
+                        supabaseUrl: activeCreds.url,
+                        supabaseAnonKey: activeCreds.anonKey,
                         backButtonUrl: remoteBackUrl || existingBackUrl
                     };
 
@@ -3586,11 +3419,164 @@
                         await pushRealtimeSnapshotToSupabase();
                     }
                     updateCloudSyncTimestampBadge("Supabase");
+                } else {
+                    renderAllViews();
+                    updateAuditSyncStatusBar("✅ Terhubung ke Supabase (Menunggu Produk)", 0);
                 }
             } catch (e) {
                 isApplyingRemoteUpdate = false;
             }
         }
+
+        function buildBackupExportPayload() {
+            const cleanSettings = { ...storeSettings };
+            delete cleanSettings.supabaseAnonKey;
+            return {
+                exportedAt: new Date().toISOString(),
+                storeSettings: cleanSettings,
+                products
+            };
+        }
+
+        function convertLegacyBackupPayloadToState(rawData) {
+            if (!rawData || typeof rawData !== "object") return null;
+
+            if (Array.isArray(rawData.products)) {
+                return {
+                    products: deduplicateProductsList(rawData.products.map(normalizeSupabaseProductRow).filter(Boolean)),
+                    storeSettings: rawData.storeSettings || {}
+                };
+            }
+
+            if (Array.isArray(rawData.Products) || Array.isArray(rawData.Settings)) {
+                const kv = {};
+                (rawData.Settings || []).forEach(row => {
+                    if (row && row.key) kv[row.key] = row.value;
+                });
+
+                const safeParseJson = (str, fallback) => {
+                    if (Array.isArray(str) || (str && typeof str === "object")) return str;
+                    try { return JSON.parse(str); } catch (e) { return fallback; }
+                };
+
+                const convertedProducts = (rawData.Products || []).map(item => {
+                    const imgs = safeParseJson(item.imagesJson, []);
+                    const varGroupsRaw = safeParseJson(item.variantGroupsJson, []);
+                    let variations = [];
+                    if (Array.isArray(varGroupsRaw) && varGroupsRaw.length > 0) {
+                        variations = varGroupsRaw.map(g => ({
+                            groupName: g.name || "VARIASI",
+                            options: (g.options || []).map(o => ({ name: o.name || "Opsi", price: Number(o.priceAdd ?? o.price) || 0 }))
+                        }));
+                    } else {
+                        const v1 = safeParseJson(item.var1OptionsJson, []);
+                        const v2 = safeParseJson(item.var2OptionsJson, []);
+                        if (Array.isArray(v1) && v1.length > 0) {
+                            variations.push({
+                                groupName: item.var1Name || "PILIHAN 1",
+                                options: v1.map(o => ({ name: o.name || "Opsi", price: Number(o.priceAdd ?? o.price) || 0 }))
+                            });
+                        }
+                        if (Array.isArray(v2) && v2.length > 0) {
+                            variations.push({
+                                groupName: item.var2Name || "PILIHAN 2",
+                                options: v2.map(o => ({ name: o.name || "Opsi", price: Number(o.priceAdd ?? o.price) || 0 }))
+                            });
+                        }
+                    }
+
+                    let basePrice = Number(item.priceMin) || 0;
+                    if (basePrice <= 0 && variations[0]?.options?.length > 0) {
+                        const prices = variations[0].options.map(o => Number(o.price) || 0).filter(v => v > 0);
+                        if (prices.length > 0) basePrice = Math.min(...prices);
+                    }
+                    if (basePrice <= 0) basePrice = 25000;
+
+                    const tiersRaw = safeParseJson(item.wholesaleTiersJson, []);
+                    const wholesaleTiers = (Array.isArray(tiersRaw) ? tiersRaw : []).map(t => ({
+                        minQty: Number(t.minQty) || 5,
+                        discountPercent: Number(t.discountPercent ?? t.price) || 5
+                    }));
+
+                    const soldCount = Number(item.soldCount) || 250;
+                    return {
+                        id: item.id || ("prod_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6)),
+                        name: item.name || "Produk Cetak",
+                        category: item.category || "NAMETAG",
+                        basePrice,
+                        discountPercent: Number(item.discount) || 0,
+                        soldCount,
+                        soldLabel: soldCount >= 1000 ? `${Math.round(soldCount / 1000)}RB+ Terjual` : `${soldCount} Terjual`,
+                        rating: Number(item.rating) || 5,
+                        description: item.description || "",
+                        isPromo: String(item.isPromo) === "true",
+                        isBestseller: String(item.isBestSeller) === "true",
+                        isPreorder: String(item.isPreOrder) === "true",
+                        poDays: Number(item.poDays) || 0,
+                        hasVariations: String(item.hasVariant) === "true" && variations.length > 0,
+                        variations,
+                        wholesaleTiers,
+                        photos: Array.isArray(imgs) && imgs.length > 0 ? imgs : [SVG_NAMETAG_SILVER_PLAT],
+                        marketplaceLinks: {},
+                        videoUrl: item.videoUrl || "",
+                        cardStyle: item.id === "p1" ? "dark_stamp" : (item.id === "p_foto_1" ? "slate_glue" : "standard")
+                    };
+                });
+
+                const mappedMarketplaces = INITIAL_MARKETPLACES.map(mp => {
+                    const keyMap = {
+                        shopee: ["shopee_url", "shopee_label"],
+                        tokopedia: ["tokopedia_url", "tokopedia_label"],
+                        tiktok_shop: ["tiktok_shop_url", "tiktok_shop_label"],
+                        lazada: ["lazada_url", "lazada_label"],
+                        blibli: ["blibli_url", "blibli_label"],
+                        toco: ["toco_url", "toco_label"],
+                        lynk: ["lynk_url", "lynk_label"],
+                        instagram: ["ig_url", "ig_label"],
+                        facebook: ["fb_url", "fb_label"],
+                        tiktok: ["tiktok_url", "tiktok_label"],
+                        youtube: ["yt_url", "yt_label"]
+                    };
+                    const pair = keyMap[mp.platformKey];
+                    return {
+                        ...mp,
+                        url: (pair && kv[pair[0]]) ? kv[pair[0]] : mp.url,
+                        label: (pair && kv[pair[1]]) ? kv[pair[1]] : mp.label
+                    };
+                });
+
+                return {
+                    products: deduplicateProductsList(convertedProducts),
+                    storeSettings: {
+                        adminUsername: kv.admin_username || storeSettings.adminUsername,
+                        storeName: kv.shop_name || storeSettings.storeName,
+                        waNumber: kv.wa_number || storeSettings.waNumber,
+                        storeAddress: kv.workshop_address || storeSettings.storeAddress,
+                        darkMode: String(kv.dark_mode) === "true",
+                        digitalLink: kv.lynk_url || storeSettings.digitalLink,
+                        marketplaces: mappedMarketplaces
+                    }
+                };
+            }
+            return null;
+        }
+
+        if (localBroadcastChannel) {
+            localBroadcastChannel.onmessage = (ev) => {
+                if (ev && ev.data && ev.data.type === "catalog_updated" && !isCloudWriteInProgress) {
+                    applyIncomingRealtimePayload(ev.data, false);
+                }
+            };
+        }
+
+        window.addEventListener("keydown", (ev) => {
+            if (ev.ctrlKey && ev.shiftKey && (ev.key === "Shift" || ev.key === "Control" || ev.key.toLowerCase() === "a")) {
+                const activeTag = document.activeElement?.tagName;
+                if (activeTag !== "INPUT" && activeTag !== "TEXTAREA") {
+                    requestAdminAccess();
+                }
+            }
+        });
 
         function startCustomerDeviceAutoSyncLoop() {
             if (customerAutoSyncTimer) clearInterval(customerAutoSyncTimer);
@@ -3602,7 +3588,7 @@
                         autoPullFromSupabaseOnBoot(true, true);
                     }
                 }
-            }, 3500);
+            }, 2000);
 
             window.addEventListener("focus", () => {
                 if (!isCloudWriteInProgress) autoPullFromSupabaseOnBoot(true, false);
@@ -3614,12 +3600,13 @@
         }
 
         async function forcePushLocalToAllDevices() {
+            isUsingDefaultSeedCatalog = false;
             recordPendingAdminMutation({ upserted: products });
             const ok = await pushRealtimeSnapshotToSupabase();
             if (ok) {
                 showToast(`✅ Seluruh ${products.length} produk di perangkat ini telah dijadikan data utama di Supabase & semua perangkat!`, "success");
             } else {
-                showToast("⚠️ Pastikan anonKey sudah diisi pada FRONTEND_SUPABASE_CONFIG di kode sebelum deploy.", "error");
+                showToast("⚠️ Koneksi Supabase belum aktif. Buka tombol ▲ Deploy Vercel untuk menanamkan kunci Supabase.", "error");
             }
         }
 
@@ -3628,9 +3615,11 @@
                 const statusBadge = document.getElementById("supabase-status-badge");
                 const modalBadge = document.getElementById("modal-supabase-conn-badge");
                 const topCloudBadge = document.getElementById("admin-cloud-badge-text");
+                const navRtText = document.getElementById("nav-realtime-text");
 
-                const url = (FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL).trim();
-                const key = (FRONTEND_SUPABASE_CONFIG.anonKey || DEFAULT_SUPABASE_ANON_KEY).trim();
+                const creds = resolveActiveSupabaseCredentials();
+                const url = creds.url;
+                const key = creds.anonKey;
 
                 startCustomerDeviceAutoSyncLoop();
 
@@ -3639,19 +3628,26 @@
                     supabaseClient = null;
                     if (statusBadge) {
                         statusBadge.className = "bg-amber-500 text-slate-950 text-xs font-extrabold px-4 py-2 rounded-full shadow-sm";
-                        statusBadge.textContent = "• Mode Lokal (Isi anonKey di FRONTEND_SUPABASE_CONFIG)";
+                        statusBadge.textContent = "• Mode Lokal (Tanamkan Key via Deploy Vercel)";
                     }
                     if (modalBadge) {
                         modalBadge.className = "bg-amber-500 text-slate-950 text-[11px] font-extrabold px-3 py-1 rounded-full";
-                        modalBadge.textContent = "• Isi anonKey di kode FRONTEND_SUPABASE_CONFIG";
+                        modalBadge.textContent = "• Kunci Belum Tertanam di Bundle";
                     }
-                    if (topCloudBadge) topCloudBadge.textContent = "Mode Lokal (Siap Supabase)";
-                    updateAuditSyncStatusBar("⚠️ Isi anonKey di FRONTEND_SUPABASE_CONFIG untuk aktifkan Cloud Realtime", null);
-                    return;
+                    if (topCloudBadge) topCloudBadge.textContent = "Mode Lokal";
+                    if (navRtText) navRtText.textContent = "Mode Lokal";
+                    updateAuditSyncStatusBar("⚠️ Kunci Supabase belum tertanam di file HTML ini (Klik ▲ Deploy Vercel)", null);
+                    return false;
                 }
 
                 supabaseClient = window.supabase.createClient(url, key, {
-                    auth: { persistSession: false, autoRefreshToken: false }
+                    auth: { persistSession: false, autoRefreshToken: false },
+                    global: {
+                        headers: {
+                            "Cache-Control": "no-cache, no-store, must-revalidate",
+                            "Pragma": "no-cache"
+                        }
+                    }
                 });
 
                 if (statusBadge) {
@@ -3663,12 +3659,11 @@
                     modalBadge.textContent = "✓ Supabase Terhubung Aktif";
                 }
                 if (topCloudBadge) topCloudBadge.textContent = "Supabase Realtime Aktif";
-
-                autoPullFromSupabaseOnBoot(true, false);
+                if (navRtText) navRtText.textContent = "Supabase Realtime";
 
                 if (isCanvasSandboxEnvironment()) {
-                    if (topCloudBadge) topCloudBadge.textContent = "Supabase Realtime (REST 3s)";
-                    return;
+                    if (topCloudBadge) topCloudBadge.textContent = "Supabase Realtime (REST 2s)";
+                    return true;
                 }
 
                 if (realtimeChannel) {
@@ -3676,22 +3671,27 @@
                 }
 
                 realtimeChannel = supabaseClient
-                    .channel("anugerah-art-global-sync")
+                    .channel("anugerah-art-global-sync-v2")
                     .on("broadcast", { event: "catalog_updated" }, (payload) => {
                         if (payload && payload.payload && !isCloudWriteInProgress) {
                             applyIncomingRealtimePayload(payload.payload, false);
+                            autoPullFromSupabaseOnBoot(true, false);
                         }
                     })
                     .on(
                         "postgres_changes",
-                        { event: "*", schema: "public", table: "anugerah_cloud_store", filter: "id=eq.main_store_data" },
+                        { event: "*", schema: "public", table: "anugerah_cloud_store" },
                         (payload) => {
-                            if (payload && payload.new && !isCloudWriteInProgress) {
-                                lastKnownRemoteUpdatedAt = payload.new.updated_at || "";
-                                applyIncomingRealtimePayload({
-                                    products: payload.new.products,
-                                    storeSettings: payload.new.store_settings
-                                }, false);
+                            if (!isCloudWriteInProgress) {
+                                if (payload && payload.new && payload.new.id === "main_store_data" && Array.isArray(payload.new.products) && payload.new.products.length > 0) {
+                                    lastKnownRemoteUpdatedAt = payload.new.updated_at || "";
+                                    applyIncomingRealtimePayload({
+                                        products: payload.new.products,
+                                        storeSettings: payload.new.store_settings
+                                    }, false);
+                                } else {
+                                    autoPullFromSupabaseOnBoot(true, false);
+                                }
                             }
                         }
                     )
@@ -3714,146 +3714,9 @@
                             topCloudBadge.textContent = "Supabase Realtime Aktif";
                         }
                     });
+                return true;
             } catch (err) {
                 console.warn("Supabase init info:", err);
-            }
-        }
-
-        function applyIncomingRealtimePayload(data, showNotification = false) {
-            if (!data || isApplyingRemoteUpdate || isCloudWriteInProgress) return;
-            isApplyingRemoteUpdate = true;
-
-            if (Array.isArray(data.products) && data.products.length > 0) {
-                products = applyPendingMutationsOntoList(data.products);
-            }
-            if (data.storeSettings && Object.keys(data.storeSettings).length > 0) {
-                const decodedRemote = deepDecodeObjectStrings(data.storeSettings);
-                const prevBackUrl = normalizeBackUrl(storeSettings.backButtonUrl);
-                const nextBackUrl = normalizeBackUrl(decodedRemote.backButtonUrl);
-                storeSettings = {
-                    ...storeSettings,
-                    ...decodedRemote,
-                    supabaseUrl: FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL,
-                    supabaseAnonKey: FRONTEND_SUPABASE_CONFIG.anonKey || DEFAULT_SUPABASE_ANON_KEY,
-                    backButtonUrl: decodedRemote.backButtonUrl !== undefined ? nextBackUrl : prevBackUrl
-                };
-                if (storeSettings.backButtonUrl) {
-                    try { localStorage.setItem("anugerah_back_url_v3", storeSettings.backButtonUrl); } catch (e) {}
-                }
-            }
-
-            idbSetItem("anugerah_products_idb_v3", products);
-            idbSetItem("anugerah_settings_idb_v3", storeSettings);
-            try {
-                localStorage.setItem("anugerah_settings_v2", JSON.stringify(storeSettings));
-                localStorage.setItem("anugerah_products_v2", JSON.stringify(createCompactProductsForLocalStorage(products)));
-            } catch (e) {}
-
-            syncEmbeddedStateTag();
-            applySettingsToDOM();
-            renderAllViews();
-            updateAuditSyncStatusBar(`✅ Sinkron Realtime (${products.length} Produk)`, products.length);
-            isApplyingRemoteUpdate = false;
-
-            if (showNotification) {
-                showToast(`⚡ Katalog (${products.length} produk) berhasil disinkronkan secara real-time!`, "info");
-            }
-        }
-
-        async function pushRealtimeSnapshotToSupabase() {
-            if (isApplyingRemoteUpdate || !supabaseClient) return false;
-            isCloudWriteInProgress = true;
-            updateAuditSyncStatusBar("⏳ Menyimpan ke Supabase...", null);
-
-            try {
-                let savedOk = false;
-                const nowIso = new Date().toISOString();
-                const activeMarketplaces = Array.isArray(storeSettings.marketplaces) && storeSettings.marketplaces.length > 0
-                    ? storeSettings.marketplaces
-                    : INITIAL_MARKETPLACES;
-                storeSettings.marketplaces = activeMarketplaces;
-
-                // Jangan kirim kredensial rahasia ke kolom JSON publik
-                const sanitizedPublicSettings = { ...storeSettings };
-                delete sanitizedPublicSettings.supabaseUrl;
-                delete sanitizedPublicSettings.supabaseAnonKey;
-
-                let upData = null;
-                let directStoreErr = null;
-                const fullRes = await supabaseClient
-                    .from("anugerah_cloud_store")
-                    .upsert({
-                        id: "main_store_data",
-                        products,
-                        marketplaces: activeMarketplaces,
-                        store_settings: sanitizedPublicSettings,
-                        updated_at: nowIso
-                    }, { onConflict: "id" })
-                    .select("updated_at")
-                    .maybeSingle();
-
-                upData = fullRes.data;
-                directStoreErr = fullRes.error;
-
-                if (directStoreErr) {
-                    const fallbackRes = await supabaseClient
-                        .from("anugerah_cloud_store")
-                        .upsert({
-                            id: "main_store_data",
-                            products,
-                            store_settings: sanitizedPublicSettings,
-                            updated_at: nowIso
-                        }, { onConflict: "id" })
-                        .select("updated_at")
-                        .maybeSingle();
-                    upData = fallbackRes.data;
-                    directStoreErr = fallbackRes.error;
-                }
-
-                if (!directStoreErr) {
-                    savedOk = true;
-                    if (upData && upData.updated_at) {
-                        lastKnownRemoteUpdatedAt = upData.updated_at;
-                    }
-                }
-
-                const { error: rpcError } = await supabaseClient.rpc("sync_anugerah_store_atomic", {
-                    p_products: products,
-                    p_settings: sanitizedPublicSettings,
-                    p_allow_empty: false,
-                    p_marketplaces: activeMarketplaces
-                });
-
-                if (!rpcError) {
-                    savedOk = true;
-                }
-
-                if (savedOk) {
-                    clearPendingAdminMutations();
-                    updateCloudSyncTimestampBadge("Supabase");
-                    updateAuditSyncStatusBar(`✅ Tersimpan Permanen di Supabase (${products.length} Produk)`, products.length);
-                } else {
-                    updateAuditSyncStatusBar("⚠️ Gagal simpan ke tabel Supabase (Cek SQL Setup)", null);
-                }
-
-                if (realtimeChannel && savedOk) {
-                    try {
-                        await realtimeChannel.send({
-                            type: "broadcast",
-                            event: "catalog_updated",
-                            payload: {
-                                products,
-                                storeSettings: sanitizedPublicSettings,
-                                updatedAt: Date.now()
-                            }
-                        });
-                    } catch (bErr) {}
-                }
-
-                isCloudWriteInProgress = false;
-                return savedOk;
-            } catch (e) {
-                isCloudWriteInProgress = false;
                 return false;
             }
         }
@@ -6337,12 +6200,52 @@
         function openCloudVercelSetupModal(tab = "vercel") {
             if (!requireAdminAuth()) return;
             document.getElementById("supabase-sql-code").value = SUPABASE_SQL_BACKEND_SCRIPT;
+            refreshVercelBundleKeyStatusUI();
             const vercelCodeEl = document.getElementById("vercel-frontend-code");
             if (vercelCodeEl) {
                 vercelCodeEl.value = generateCleanVercelIndexHtml();
             }
             switchCloudVercelTab(tab);
             document.getElementById("modal-cloud-vercel").classList.remove("hide");
+        }
+
+        function refreshVercelBundleKeyStatusUI() {
+            const creds = resolveActiveSupabaseCredentials();
+            const isJwtValid = creds.anonKey && creds.anonKey.split(".").length === 3 && creds.anonKey.length > 80;
+            const pill = document.getElementById("vercel-key-status-pill");
+            const missingForm = document.getElementById("vercel-key-missing-form");
+            if (pill) {
+                if (isJwtValid) {
+                    pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white";
+                    pill.textContent = "✓ Kunci Supabase Siap Tertanam Otomatis";
+                } else {
+                    pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-red-600 text-white";
+                    pill.textContent = "⚠️ Kunci Supabase Belum Tertanam";
+                }
+            }
+            if (missingForm) {
+                missingForm.classList.toggle("hide", Boolean(isJwtValid));
+            }
+        }
+
+        async function applySupabaseKeyForVercelBundle() {
+            const inp = document.getElementById("vercel-embed-anon-key");
+            const rawKey = (inp?.value || "").trim();
+            if (rawKey.split(".").length !== 3 || rawKey.length < 80) {
+                showToast("Format Anon Public Key Supabase tidak valid (harus token JWT eyJ...).", "error");
+                return;
+            }
+            FRONTEND_SUPABASE_CONFIG.anonKey = rawKey;
+            try {
+                localStorage.setItem("anugerah_sb_url_v1", DEFAULT_SUPABASE_URL);
+                localStorage.setItem("anugerah_sb_key_v1", rawKey);
+            } catch (e) {}
+            initSupabaseRealtimeClient();
+            await autoPullFromSupabaseOnBoot(false, false);
+            refreshVercelBundleKeyStatusUI();
+            const vercelCodeEl = document.getElementById("vercel-frontend-code");
+            if (vercelCodeEl) vercelCodeEl.value = generateCleanVercelIndexHtml();
+            showToast("✓ Kunci Supabase berhasil ditanamkan! Silakan unduh index.html untuk di-deploy ke Vercel.", "success");
         }
 
         function switchCloudVercelTab(tab) {
@@ -6381,6 +6284,7 @@
 
         function generateCleanVercelIndexHtml() {
             syncEmbeddedStateTag();
+            const activeCreds = resolveActiveSupabaseCredentials();
             const cloneDoc = document.documentElement.cloneNode(true);
             const adminBtn = cloneDoc.querySelector("#btn-mode-admin");
             if (adminBtn) adminBtn.classList.add("hide");
@@ -6397,7 +6301,14 @@
             const toastCont = cloneDoc.querySelector("#toast-container");
             if (toastCont) toastCont.innerHTML = "";
 
-            return "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+            let serializedHtml = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+            if (activeCreds.anonKey && activeCreds.anonKey.split(".").length === 3) {
+                serializedHtml = serializedHtml.replace(
+                    /const FRONTEND_SUPABASE_CONFIG\s*=\s*\{[\s\S]*?\};/,
+                    `const FRONTEND_SUPABASE_CONFIG = {\n            url: ${JSON.stringify(activeCreds.url)},\n            anonKey: ${JSON.stringify(activeCreds.anonKey)}\n        };`
+                );
+            }
+            return serializedHtml;
         }
 
         function generateVercelJsonConfig() {
@@ -6474,8 +6385,9 @@
             document.getElementById("modal-system-audit").classList.remove("hide");
 
             const checks = [];
-            const sbUrl = (FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL).trim();
-            const sbKey = (FRONTEND_SUPABASE_CONFIG.anonKey || DEFAULT_SUPABASE_ANON_KEY).trim();
+            const activeCreds = resolveActiveSupabaseCredentials();
+            const sbUrl = activeCreds.url;
+            const sbKey = activeCreds.anonKey;
             const isJwtValid = sbKey.split(".").length === 3 && sbKey.length > 80;
 
             checks.push({
@@ -6797,7 +6709,8 @@ ON CONFLICT (id) DO UPDATE SET public = true;`;
         }
 
         async function testSupabaseConnection() {
-            const url = (FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL).trim();
+            const activeCreds = resolveActiveSupabaseCredentials();
+            const url = activeCreds.url;
             const badge = document.getElementById("supabase-status-badge");
             if (badge) badge.textContent = "⏳ Menguji Koneksi Supabase...";
 
@@ -6874,8 +6787,26 @@ ON CONFLICT (id) DO UPDATE SET public = true;`;
             products = deduplicateProductsList(products);
             applySettingsToDOM();
             render15PhotoSlotsUI();
-            renderAllViews();
-            initSupabaseRealtimeClient();
+
+            const hasSupabaseConn = initSupabaseRealtimeClient();
+            if (hasSupabaseConn && isUsingDefaultSeedCatalog) {
+                const grid = document.getElementById("public-products-grid");
+                if (grid) {
+                    grid.innerHTML = Array(4).fill(0).map(() => `
+                        <div class="rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-3 space-y-3 animate-pulse">
+                            <div class="aspect-square w-full rounded-2xl bg-slate-200"></div>
+                            <div class="h-3.5 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-4 bg-slate-200 rounded w-1/2"></div>
+                        </div>
+                    `).join("");
+                }
+                await autoPullFromSupabaseOnBoot(true, false);
+            } else if (hasSupabaseConn) {
+                renderAllViews();
+                autoPullFromSupabaseOnBoot(true, false);
+            } else {
+                renderAllViews();
+            }
         });
     </script>
 </body>

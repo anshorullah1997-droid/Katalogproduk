@@ -1818,14 +1818,17 @@
                         <span class="text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
                             <i class="fa-solid fa-key text-amber-600"></i> Status Kunci Koneksi Supabase untuk File Vercel:
                         </span>
-                        <span id="vercel-key-status-pill" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">Mengecek...</span>
+                        <div class="flex items-center gap-2">
+                            <span id="vercel-key-status-pill" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">Mengecek...</span>
+                            <button type="button" id="btn-toggle-vercel-key-form" onclick="toggleVercelKeyFormVisibility()" class="hide text-[10px] font-extrabold text-amber-900 underline hover:text-black">Ganti Kunci</button>
+                        </div>
                     </div>
                     <div id="vercel-key-missing-form" class="hide space-y-2 pt-1">
                         <p class="text-[11px] text-amber-900">
-                            Tempelkan <strong>Supabase Anon Public Key (eyJ...)</strong> di bawah ini sekali saja agar otomatis tertanam permanen ke dalam file <code>index.html</code> yang akan di-upload ke Vercel:
+                            Tempelkan <strong>Supabase Publishable Key (<code>sb_publishable_...</code>)</strong> atau <strong>Legacy Anon Key (<code>eyJ...</code>)</strong> di bawah ini sekali saja agar otomatis tertanam permanen ke dalam file <code>index.html</code> untuk Vercel:
                         </p>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="vercel-embed-anon-key" placeholder="Tempel eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="flex-1 border border-amber-400 bg-white rounded-xl px-3 py-2 text-xs font-mono text-slate-900 outline-none">
+                            <input type="text" id="vercel-embed-anon-key" placeholder="Tempel sb_publishable_... atau eyJhbGciOi..." class="flex-1 border border-amber-400 bg-white rounded-xl px-3 py-2 text-xs font-mono text-slate-900 outline-none">
                             <button type="button" onclick="applySupabaseKeyForVercelBundle()" class="bg-slate-900 hover:bg-black text-amber-400 text-xs font-extrabold px-4 py-2 rounded-xl whitespace-nowrap">
                                 Tanamkan ke File Vercel
                             </button>
@@ -1938,6 +1941,19 @@
 
         const DEFAULT_SUPABASE_URL = FRONTEND_SUPABASE_CONFIG.url || "https://yobrveoosucbsionvoja.supabase.co";
         const DEFAULT_SUPABASE_ANON_KEY = FRONTEND_SUPABASE_CONFIG.anonKey || "sb_publishable_uxyw1hMO-ymmTQ7NeBv0BA_3IjmD1ib";
+
+        /**
+         * Validasi kunci publik Supabase: mendukung format baru (sb_publishable_...)
+         * maupun format Legacy Anon Key JWT (eyJ...) serta menolak Secret Key.
+         */
+        function isValidSupabasePublicKey(key) {
+            const k = String(key || "").trim();
+            if (!k) return false;
+            if (k.startsWith("sb_secret_")) return false;
+            if (k.startsWith("sb_publishable_") && k.length >= 25) return true;
+            if (k.startsWith("eyJ") && k.split(".").length === 3 && k.length >= 80) return true;
+            return false;
+        }
 
         function isCanvasSandboxEnvironment() {
             try {
@@ -2318,7 +2334,7 @@
                     resolvedUrl = urlFromParam.trim();
                     localStorage.setItem("anugerah_sb_url_v1", resolvedUrl);
                 }
-                if (keyFromParam && keyFromParam.split(".").length === 3 && keyFromParam.length > 80) {
+                if (isValidSupabasePublicKey(keyFromParam)) {
                     resolvedKey = keyFromParam.trim();
                     localStorage.setItem("anugerah_sb_key_v1", resolvedKey);
                 }
@@ -2423,13 +2439,13 @@
         let activeDetailProduct = null;
         let selectedDetailVariations = {};
         let formPhotoSlots = Array(15).fill("");
-        let formPhotoFilenames = Array(15).fill("No file...osen");
+        let formPhotoFilenames = Array(15).fill("Belum dipilih");
         let formVariations = [];
         let formWholesaleTiers = [];
         let selectedBulkProductIds = new Set();
         let backUrlSyncDebounceTimer = null;
-
-        // --- INDEXEDDB HIGH-CAPACITY STORAGE ENGINE ---
+        let settingsSyncDebounceTimer = null;
+        let realtimePullDebounceTimer = null;
         const IDB_NAME = "AnugerahArtZeroLagDB";
         const IDB_VERSION = 1;
         let idbInstance = null;
@@ -3083,7 +3099,7 @@
 
             const activeCreds = resolveActiveSupabaseCredentials();
             storeSettings.supabaseUrl = activeCreds.url;
-            if (activeCreds.anonKey && activeCreds.anonKey.length > 80) {
+            if (isValidSupabasePublicKey(activeCreds.anonKey)) {
                 storeSettings.supabaseAnonKey = activeCreds.anonKey;
             }
             storeSettings.lastUpdatedAt = sanitizeTimestampNow(storeSettings.lastUpdatedAt);
@@ -3347,8 +3363,14 @@
 
             try {
                 if (metaCheckOnly && lastKnownRemoteUpdatedAt) {
-                    const { data: meta } = await supabaseClient.rpc("get_catalog_sync_meta");
-                    if (meta && meta.updated_at && meta.updated_at === lastKnownRemoteUpdatedAt) {
+                    const { data: meta, error: metaErr } = await supabaseClient.rpc("get_catalog_sync_meta");
+                    if (
+                        !metaErr &&
+                        meta &&
+                        meta.updated_at &&
+                        meta.updated_at === lastKnownRemoteUpdatedAt &&
+                        Number(meta.products_count) === products.length
+                    ) {
                         return;
                     }
                 }
@@ -3623,8 +3645,8 @@
 
                 startCustomerDeviceAutoSyncLoop();
 
-                const isCompleteJwt = key.split(".").length === 3 && key.length > 80;
-                if (!url || !isCompleteJwt || !window.supabase) {
+                const isKeyValid = isValidSupabasePublicKey(key);
+                if (!url || !isKeyValid || !window.supabase) {
                     supabaseClient = null;
                     if (statusBadge) {
                         statusBadge.className = "bg-amber-500 text-slate-950 text-xs font-extrabold px-4 py-2 rounded-full shadow-sm";
@@ -3670,12 +3692,19 @@
                     supabaseClient.removeChannel(realtimeChannel);
                 }
 
+                const scheduleRealtimeRefresh = () => {
+                    clearTimeout(realtimePullDebounceTimer);
+                    realtimePullDebounceTimer = setTimeout(() => {
+                        if (!isCloudWriteInProgress) autoPullFromSupabaseOnBoot(true, false);
+                    }, 250);
+                };
+
                 realtimeChannel = supabaseClient
                     .channel("anugerah-art-global-sync-v2")
                     .on("broadcast", { event: "catalog_updated" }, (payload) => {
                         if (payload && payload.payload && !isCloudWriteInProgress) {
                             applyIncomingRealtimePayload(payload.payload, false);
-                            autoPullFromSupabaseOnBoot(true, false);
+                            scheduleRealtimeRefresh();
                         }
                     })
                     .on(
@@ -3689,25 +3718,25 @@
                                         products: payload.new.products,
                                         storeSettings: payload.new.store_settings
                                     }, false);
-                                } else {
-                                    autoPullFromSupabaseOnBoot(true, false);
                                 }
+                                scheduleRealtimeRefresh();
                             }
                         }
                     )
                     .on(
                         "postgres_changes",
                         { event: "*", schema: "public", table: "products" },
-                        () => {
-                            if (!isCloudWriteInProgress) autoPullFromSupabaseOnBoot(true, false);
-                        }
+                        () => scheduleRealtimeRefresh()
+                    )
+                    .on(
+                        "postgres_changes",
+                        { event: "*", schema: "public", table: "store_settings" },
+                        () => scheduleRealtimeRefresh()
                     )
                     .on(
                         "postgres_changes",
                         { event: "*", schema: "public", table: "marketplaces" },
-                        () => {
-                            if (!isCloudWriteInProgress) autoPullFromSupabaseOnBoot(true, false);
-                        }
+                        () => scheduleRealtimeRefresh()
                     )
                     .subscribe((status) => {
                         if (status === "SUBSCRIBED" && topCloudBadge) {
@@ -4883,7 +4912,7 @@
                     ? `<span class="text-[#dc2626] font-extrabold text-xs">★ Foto 1 (Sampul)</span>`
                     : `<span class="text-slate-800 font-extrabold text-xs">Foto ${slotNum}</span>`;
                 const currentUrl = formPhotoSlots[i] || "";
-                const filename = formPhotoFilenames[i] || "No file...osen";
+                const filename = formPhotoFilenames[i] || "Belum dipilih";
 
                 const thumbContent = currentUrl
                     ? `<img src="${currentUrl}" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'">`
@@ -4961,7 +4990,7 @@
 
         function clearAll15PhotoSlots() {
             formPhotoSlots = Array(15).fill("");
-            formPhotoFilenames = Array(15).fill("No file...osen");
+            formPhotoFilenames = Array(15).fill("Belum dipilih");
             render15PhotoSlotsUI();
             showToast("15 Slot Foto telah dikosongkan.", "info");
         }
@@ -4975,7 +5004,11 @@
             const raw = document.getElementById("paste-urls-textarea").value.trim();
             const urls = raw.split(/\r?\n/).map(u => u.trim()).filter(Boolean).slice(0, 15);
             formPhotoSlots = Array(15).fill("");
-            urls.forEach((u, idx) => { formPhotoSlots[idx] = u; });
+            formPhotoFilenames = Array(15).fill("Belum dipilih");
+            urls.forEach((url, idx) => {
+                formPhotoSlots[idx] = url;
+                formPhotoFilenames[idx] = `URL_${idx + 1}`;
+            });
             render15PhotoSlotsUI();
             closeModal("modal-paste-urls");
             showToast(`${urls.length} URL Foto berhasil dimasukkan ke slot galeri!`, "success");
@@ -5346,11 +5379,7 @@
             renderWholesaleTiersUI();
 
             formPhotoSlots = Array(15).fill("");
-            formPhotoFilenames = Array(15).fill("No file...osen");
-            (p.photos || []).slice(0, 15).forEach((url, i) => {
-                formPhotoSlots[i] = url;
-                formPhotoFilenames[i] = `Foto_${i + 1}.jpg`;
-            });
+            formPhotoFilenames = Array(15).fill("Belum dipilih");
             render15PhotoSlotsUI();
 
             document.getElementById("prod-video-url").value = p.videoUrl || "";
@@ -5734,11 +5763,12 @@
 
         function openNavbarChatAdmin() {
             const phone = (storeSettings.waNumber || "628980003560").replace(/[^0-9]/g, "");
-            const text = storeSettings.waGreeting || `Halo Kak Admin ${storeSettings.storeName}`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
+            const greeting = storeSettings.waGreeting || `Halo Kak Admin ${storeSettings.storeName || "ANUGERAH_ART"}, saya ingin berkonsultasi mengenai produk cetak.`;
+            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(greeting)}`;
+            window.open(waUrl, "_blank");
         }
 
-        function saveStoreSettings() {
+        function saveStoreSettings(syncImmediate = false) {
             const nameEl = document.getElementById("setting-store-name");
             const sloganEl = document.getElementById("setting-store-slogan");
             const addressEl = document.getElementById("setting-store-address");
@@ -5772,12 +5802,22 @@
             }
 
             applySettingsToDOM();
-            saveStateToStorage();
             renderPublicCatalog();
+
+            if (syncImmediate) {
+                clearTimeout(settingsSyncDebounceTimer);
+                saveStateToStorage(true);
+            } else {
+                saveStateToStorage(false);
+                clearTimeout(settingsSyncDebounceTimer);
+                settingsSyncDebounceTimer = setTimeout(() => {
+                    saveStateToStorage(true);
+                }, 700);
+            }
         }
 
         function saveAndBroadcastAllSettings() {
-            saveStoreSettings();
+            saveStoreSettings(true);
             syncAllToSupabase();
             showToast("✓ Semua Pengaturan & Tema berhasil disimpan permanen ke Supabase!", "success");
         }
@@ -6211,41 +6251,57 @@
 
         function refreshVercelBundleKeyStatusUI() {
             const creds = resolveActiveSupabaseCredentials();
-            const isJwtValid = creds.anonKey && creds.anonKey.split(".").length === 3 && creds.anonKey.length > 80;
+            const isKeyValid = isValidSupabasePublicKey(creds.anonKey);
             const pill = document.getElementById("vercel-key-status-pill");
             const missingForm = document.getElementById("vercel-key-missing-form");
+            const toggleBtn = document.getElementById("btn-toggle-vercel-key-form");
             if (pill) {
-                if (isJwtValid) {
+                if (isKeyValid) {
+                    const keyType = creds.anonKey.startsWith("sb_publishable_") ? "Publishable Key" : "Anon Key";
                     pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white";
-                    pill.textContent = "✓ Kunci Supabase Siap Tertanam Otomatis";
+                    pill.textContent = `✓ ${keyType} Siap Tertanam Otomatis`;
                 } else {
                     pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-red-600 text-white";
                     pill.textContent = "⚠️ Kunci Supabase Belum Tertanam";
                 }
             }
             if (missingForm) {
-                missingForm.classList.toggle("hide", Boolean(isJwtValid));
+                missingForm.classList.toggle("hide", Boolean(isKeyValid));
             }
+            if (toggleBtn) {
+                toggleBtn.classList.toggle("hide", !isKeyValid);
+            }
+        }
+
+        function toggleVercelKeyFormVisibility() {
+            const missingForm = document.getElementById("vercel-key-missing-form");
+            if (missingForm) missingForm.classList.toggle("hide");
         }
 
         async function applySupabaseKeyForVercelBundle() {
             const inp = document.getElementById("vercel-embed-anon-key");
             const rawKey = (inp?.value || "").trim();
-            if (rawKey.split(".").length !== 3 || rawKey.length < 80) {
-                showToast("Format Anon Public Key Supabase tidak valid (harus token JWT eyJ...).", "error");
+            if (rawKey.startsWith("sb_secret_")) {
+                showToast("⚠️ Jangan gunakan Secret Key (sb_secret_) di Frontend! Gunakan Publishable Key (sb_publishable_...) atau Legacy Anon Key (eyJ...).", "error");
+                return;
+            }
+            if (!isValidSupabasePublicKey(rawKey)) {
+                showToast("Format kunci Supabase tidak valid! Gunakan Publishable Key (sb_publishable_...) atau Legacy Anon Key (eyJ...).", "error");
                 return;
             }
             FRONTEND_SUPABASE_CONFIG.anonKey = rawKey;
+            storeSettings.supabaseAnonKey = rawKey;
             try {
                 localStorage.setItem("anugerah_sb_url_v1", DEFAULT_SUPABASE_URL);
                 localStorage.setItem("anugerah_sb_key_v1", rawKey);
             } catch (e) {}
+            if (inp) inp.value = "";
             initSupabaseRealtimeClient();
             await autoPullFromSupabaseOnBoot(false, false);
             refreshVercelBundleKeyStatusUI();
             const vercelCodeEl = document.getElementById("vercel-frontend-code");
             if (vercelCodeEl) vercelCodeEl.value = generateCleanVercelIndexHtml();
-            showToast("✓ Kunci Supabase berhasil ditanamkan! Silakan unduh index.html untuk di-deploy ke Vercel.", "success");
+            showToast("✓ Kunci Supabase berhasil ditanamkan & terhubung! Silakan unduh index.html untuk di-deploy ke Vercel.", "success");
         }
 
         function switchCloudVercelTab(tab) {
@@ -6298,11 +6354,19 @@
             if (modalCv) modalCv.classList.add("hide");
             const modalAudit = cloneDoc.querySelector("#modal-system-audit");
             if (modalAudit) modalAudit.classList.add("hide");
+            const modalPin = cloneDoc.querySelector("#modal-admin-pin");
+            if (modalPin) modalPin.classList.add("hide");
+            const modalCart = cloneDoc.querySelector("#modal-cart");
+            if (modalCart) modalCart.classList.add("hide");
+            const modalDetail = cloneDoc.querySelector("#modal-product-detail");
+            if (modalDetail) modalDetail.classList.add("hide");
+            const vercelKeyInp = cloneDoc.querySelector("#vercel-embed-anon-key");
+            if (vercelKeyInp) vercelKeyInp.setAttribute("value", "");
             const toastCont = cloneDoc.querySelector("#toast-container");
             if (toastCont) toastCont.innerHTML = "";
 
             let serializedHtml = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
-            if (activeCreds.anonKey && activeCreds.anonKey.split(".").length === 3) {
+            if (isValidSupabasePublicKey(activeCreds.anonKey)) {
                 serializedHtml = serializedHtml.replace(
                     /const FRONTEND_SUPABASE_CONFIG\s*=\s*\{[\s\S]*?\};/,
                     `const FRONTEND_SUPABASE_CONFIG = {\n            url: ${JSON.stringify(activeCreds.url)},\n            anonKey: ${JSON.stringify(activeCreds.anonKey)}\n        };`
@@ -6388,14 +6452,14 @@
             const activeCreds = resolveActiveSupabaseCredentials();
             const sbUrl = activeCreds.url;
             const sbKey = activeCreds.anonKey;
-            const isJwtValid = sbKey.split(".").length === 3 && sbKey.length > 80;
+            const isKeyValid = isValidSupabasePublicKey(sbKey);
 
             checks.push({
-                ok: Boolean(sbUrl && isJwtValid),
+                ok: Boolean(sbUrl && isKeyValid),
                 title: "1. Konfigurasi Internal Supabase (FRONTEND_SUPABASE_CONFIG)",
-                detail: isJwtValid
-                    ? `Aktif (${sbUrl}) • Kunci JWT lengkap & aman (tidak terekspos di UI Admin).`
-                    : "anonKey belum diisi pada objek FRONTEND_SUPABASE_CONFIG di bagian atas <script>."
+                detail: isKeyValid
+                    ? `Aktif (${sbUrl}) • ${sbKey.startsWith("sb_publishable_") ? "Publishable Key" : "Anon JWT Key"} valid & aman.`
+                    : "Kunci Supabase belum ditanamkan. Klik tombol ▲ Deploy Vercel lalu tempel Publishable Key (sb_publishable_...) atau Anon Key (eyJ...)."
             });
 
             if (supabaseClient) {
@@ -6661,48 +6725,89 @@ CREATE POLICY "Public Marketplaces Access" ON public.marketplaces FOR ALL TO ano
 INSERT INTO storage.buckets (id, name, public, file_size_limit)
 VALUES ('anugerah-media', 'anugerah-media', true, 52428800),
        ('product-images', 'product-images', true, 52428800)
-ON CONFLICT (id) DO UPDATE SET public = true;`;
+ON CONFLICT (id) DO UPDATE SET public = true, file_size_limit = 52428800;
+
+DROP POLICY IF EXISTS "Public Media Select" ON storage.objects;
+CREATE POLICY "Public Media Select" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id IN ('product-images', 'anugerah-media'));
+DROP POLICY IF EXISTS "Public Media Insert" ON storage.objects;
+CREATE POLICY "Public Media Insert" ON storage.objects FOR INSERT TO anon, authenticated WITH CHECK (bucket_id IN ('product-images', 'anugerah-media'));
+DROP POLICY IF EXISTS "Public Media Update" ON storage.objects;
+CREATE POLICY "Public Media Update" ON storage.objects FOR UPDATE TO anon, authenticated USING (bucket_id IN ('product-images', 'anugerah-media'));
+DROP POLICY IF EXISTS "Public Media Delete" ON storage.objects;
+CREATE POLICY "Public Media Delete" ON storage.objects FOR DELETE TO anon, authenticated USING (bucket_id IN ('product-images', 'anugerah-media'));
+
+CREATE OR REPLACE FUNCTION public.get_catalog_sync_meta()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER AS $$
+    SELECT jsonb_build_object(
+        'updated_at', updated_at,
+        'products_count', CASE WHEN jsonb_typeof(products) = 'array' THEN jsonb_array_length(products) ELSE 0 END,
+        'marketplaces_count', CASE WHEN jsonb_typeof(marketplaces) = 'array' THEN jsonb_array_length(marketplaces) ELSE 0 END
+    ) FROM public.anugerah_cloud_store WHERE id = 'main_store_data' LIMIT 1;
+$$;
+GRANT EXECUTE ON FUNCTION public.get_catalog_sync_meta() TO anon, authenticated;
+
+ALTER TABLE public.anugerah_cloud_store REPLICA IDENTITY FULL;
+ALTER TABLE public.products REPLICA IDENTITY FULL;
+ALTER TABLE public.store_settings REPLICA IDENTITY FULL;
+ALTER TABLE public.marketplaces REPLICA IDENTITY FULL;
+
+DO $$
+BEGIN
+    BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.anugerah_cloud_store; EXCEPTION WHEN duplicate_object THEN NULL; END;
+    BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.products; EXCEPTION WHEN duplicate_object THEN NULL; END;
+    BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.store_settings; EXCEPTION WHEN duplicate_object THEN NULL; END;
+    BEGIN ALTER PUBLICATION supabase_realtime ADD TABLE public.marketplaces; EXCEPTION WHEN duplicate_object THEN NULL; END;
+END $$;
+
+INSERT INTO public.anugerah_cloud_store (id, products, marketplaces, store_settings, updated_at)
+VALUES ('main_store_data', '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, NOW())
+ON CONFLICT (id) DO NOTHING;`;
 
         function downloadJsonBackup() {
             const payload = buildBackupExportPayload();
-            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
+            const dateTag = new Date().toISOString().slice(0, 10);
             a.href = url;
-            a.download = `Backup_Anugerah_Art_${new Date().toISOString().slice(0, 10)}.json`;
+            a.download = `backup_anugerah_art_${dateTag}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast("File Backup JSON berhasil diunduh!", "success");
+            showToast(`File backup JSON (${products.length} produk) berhasil diunduh!`, "success");
         }
 
         function restoreJsonBackup(inputEl) {
-            const file = inputEl.files && inputEl.files[0];
+            const file = inputEl && inputEl.files && inputEl.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (ev) => {
                 try {
-                    const rawData = JSON.parse(e.target.result);
-                    const converted = convertLegacyBackupPayloadToState(rawData);
-                    if (!converted) {
+                    const parsed = JSON.parse(ev.target.result);
+                    const converted = convertLegacyBackupPayloadToState(parsed);
+                    if (!converted || !Array.isArray(converted.products)) {
                         showToast("Format file JSON Backup tidak dikenali!", "error");
                         return;
                     }
-                    if (Array.isArray(converted.products) && converted.products.length > 0) products = converted.products;
-                    if (converted.storeSettings) {
+                    products = deduplicateProductsList(converted.products);
+                    if (converted.storeSettings && typeof converted.storeSettings === "object") {
+                        const activeCreds = resolveActiveSupabaseCredentials();
                         storeSettings = {
                             ...storeSettings,
-                            ...converted.storeSettings,
-                            supabaseUrl: FRONTEND_SUPABASE_CONFIG.url || DEFAULT_SUPABASE_URL,
-                            supabaseAnonKey: FRONTEND_SUPABASE_CONFIG.anonKey || DEFAULT_SUPABASE_ANON_KEY
+                            ...deepDecodeObjectStrings(converted.storeSettings),
+                            supabaseUrl: activeCreds.url,
+                            supabaseAnonKey: activeCreds.anonKey
                         };
                     }
-
-                    saveStateToStorage(true);
+                    ensureMarketplacesInitialized();
+                    isUsingDefaultSeedCatalog = false;
+                    await saveStateToStorage(true, { upserted: products });
                     applySettingsToDOM();
                     renderAllViews();
                     showToast(`✓ Berhasil memulihkan & menyinkronkan ${products.length} produk katalog ke Supabase!`, "success");
                 } catch (err) {
                     showToast("Format file JSON Backup tidak valid!", "error");
+                } finally {
+                    if (inputEl) inputEl.value = "";
                 }
             };
             reader.readAsText(file);
